@@ -8,9 +8,13 @@ class Ray {
 public:
     Point o;
     Vector d;
-    Ray(const Point &o_, const Vector &d_) : o(o_), d(d_) { }
+    Ray() { }
+    Ray(const Point &o, const Vector &d): o(o), d(d) { }
     Point operator ()(Float t) {
         return o + t * d;
+    }
+    string toString() {
+        return "[" + o.toString() + "] to " + d.toString();
     }
 };
 

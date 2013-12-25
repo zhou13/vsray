@@ -19,7 +19,7 @@ public:
     }
 
     Transform operator *(const Transform &rhs) {
-        return Transform(mat * rhs->mat);
+        return Transform(mat * rhs.mat);
     }
 
     Point operator()(const Point &p) {

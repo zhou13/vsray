@@ -2,15 +2,21 @@
 
 #include "core/camera.hpp"
 
-class OrthoCamera:Camera {
-    Float width;
-    Float height;
+VSRAY_NAMESPACE_BEGIN
 
+class OrthoCamera : public Camera {
+public:
     OrthoCamera(
             const Point &from,
-            const Point &to,
-            const Point &up,
-            Float width_,
-            Float height_
-    );
-}
+            const Vector &to,
+            const Vector &up,
+            Float width,
+            Float height);
+    virtual void genRay(const Sample &sample, Ray *ray);
+
+private:
+    Float width;
+    Float height;
+};
+
+VSRAY_NAMESPACE_END

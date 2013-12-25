@@ -30,12 +30,14 @@ namespace vsray {
     typedef float Float;
     typedef uint32_t intflt_t;
 #endif
+    const Float PI = Float(3.141592653589793238462);
 }
 
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/pool/object_pool.hpp>
+
 namespace vsray {
     using std::abs;
     using std::sin;
@@ -50,8 +52,6 @@ namespace vsray {
     using std::log;
     using std::ceil;
     using std::floor;
-    using std::trunc;
-    using std::round;
 
     using std::string;
     using std::vector;

@@ -17,16 +17,14 @@ public:
     Normal na, nb, nc;
 
     Mesh() { }
-    Mesh(const Point &a_, const Point &b_, const Point &c_)
-        : a(a_), b(b_), c(c_)
-    {
-        n = (b-a).cross(c-b).normalize();
+    Mesh(const Point &a, const Point &b, const Point &c) : a(a), b(b), c(c) {
+        n = Normal((b-a).cross(c-b).normalize());
     }
-    Mesh(const Point &a_, const Point &b_, const Point &c_
-         const Normal &na, const Normal &nb, const Normal &nb)
-        : a(a_), b(b_), c(c_), na(na_), nb(nb_), nc(nc_)
+    Mesh(const Point &a, const Point &b, const Point &c,
+         const Normal &na, const Normal &nb, const Normal &nc) :
+        a(a), b(b), c(c), na(na), nb(nb), nc(nc)
     {
-        n = (b-a).cross(c-b).normalize();
+        n = Normal((b-a).cross(c-b).normalize());
     }
 
     BBox getBBox();

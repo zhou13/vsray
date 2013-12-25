@@ -16,26 +16,28 @@ INCLUDE_DIR = -I src
 DEFINES = -D__DEBUG_BUILD
 
 
-CXXFLAGS += -O0 -g -msse2
+CXXFLAGS += -fsanitize=address
+CXXFLAGS += -O0 -g
 CXXFLAGS += -std=c++11
-CXXFLAGS += -Wall -Wextra -Wconversion
+CXXFLAGS += -Wall -Wextra -Wconversion -Wno-unused-private-field
 CXXFLAGS += $(INCLUDE_DIR)
 #CXXFLAGS += $(shell pkg-config --libs --cflags opencv)
 #CXXFLAGS += -fopenmp
 
 LDFLAGS = -lboost_system
 
-CXX = g++
+CXX = clang++
 CXXSOURCES = $(shell find src/ -name "*.cpp")
 OBJS = $(addprefix $(OBJ_DIR)/,$(CXXSOURCES:.cpp=.o))
 DEPFILES = $(OBJS:.o=.d)
+PCHFILE = $(HEADER:.hpp=.hpp.pch)
 
 .PHONY: all clean run rebuild gdb
 
 all: $(BIN_TARGET)
 
 
-$(OBJ_DIR)/%.o: %.cpp
+$(OBJ_DIR)/%.o: %.cpp $(PCHFILE)
 	@echo "[cc] $< ..."
 	@$(CXX) -c $< $(CXXFLAGS) -o $@
 
@@ -45,6 +47,9 @@ $(OBJ_DIR)/%.d: %.cpp
 	@$(CXX) $(INCLUDE_DIR) $(CXXFLAGS) -MM -MT "$(OBJ_DIR)/$(<:.cpp=.o) $(OBJ_DIR)/$(<:.cpp=.d)" "$<" > "$@"
 
 sinclude $(DEPFILES)
+
+$(PCHFILE): $(HEADER)
+	@$(CXX) -w $< $(CXXFLAGS) -o $@
 
 $(BIN_TARGET): $(OBJS)
 	@echo "[link] $< ..."

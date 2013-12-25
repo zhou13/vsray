@@ -1,18 +1,22 @@
-#pragma once
-
+#include "core/sample.hpp"
+#include "core/sampler.hpp"
+#include "core/ray.hpp"
 #include "camera/perspective.hpp"
+
+VSRAY_NAMESPACE_BEGIN
 
 PerspCamera::PerspCamera(
         const Point &from,
-        const Point &to,
-        const Point &up, 
-        Float width_,
-        Float height_
-        Float depth_,
-        Float lensRadius_ = 0.f,
-        Float focalDistance_ = 0.f)
-    : Camera(from, to, up, lensRadius_, focalDistance_),
-      width(width_), height(height_), depth(depth_)
+        const Vector &to,
+        const Vector &up,
+        Float width,
+        Float height,
+        Float depth,
+        Float lensRadius,
+        Float focalDistance):
+    Camera(from, to, up),
+    width(width), height(height), depth(depth),
+    lensRadius(lensRadius), focalDistance(focalDistance)
 {
     // pass
 }
@@ -22,7 +26,7 @@ void PerspCamera::genRay(const Sample &sample, Ray *ray)
     Float x = (sample.imageX - 0.5f) * width;
     Float y = (sample.imageY - 0.5f) * height;
 
-    ray->o = o;
+    ray->o = Point(0, 0, 0);
     ray->d = Vector(x, y, depth);
 
     modifyRayDOF(sample, ray);
@@ -31,6 +35,17 @@ void PerspCamera::genRay(const Sample &sample, Ray *ray)
     ray->d = cameraToWorld(ray->d);
 }
 
-void PerspCamera::modifyRayDOF(const Sample, Ray *ray)
+void PerspCamera::modifyRayDOF(const Sample &sample, Ray *ray)
 {
+    if (lensRadius > 0.f) {
+        Point p = ray->o + ray->d * (lensRadius / ray->d.z);
+
+        Vector v;
+        uniformDisk(sample.lensU, sample.lensV, &v.x, &v.y);
+
+        ray->o += v;
+        ray->d = p - ray->o;
+    }
 }
+
+VSRAY_NAMESPACE_END

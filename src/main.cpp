@@ -2,6 +2,11 @@
 #include "core/matrix.hpp"
 #include "core/transform.hpp"
 #include "core/shape.hpp"
+#include "core/spectrum.hpp"
+#include "core/sample.hpp"
+#include "camera/orthographic.hpp"
+#include "camera/perspective.hpp"
+#include "sampler/stratified.hpp"
 
 #include <iostream>
 
@@ -21,6 +26,7 @@ int main()
     auto tr = Transform::lookAt(Point(0, 0, 0), Vector(0, 0, 1), Vector(0, 1, 0));
     auto tr2 = Transform::lookAt(Point(5, 0, 0), Vector(-1, 0, 0), Vector(0, 1, 0));
     pdash();
+
     pobj(tr2);
     pobj(tr2.inverse());
     pobj(tr2.inverse()(Point(0, 0, 0)));
@@ -28,8 +34,9 @@ int main()
     pdash();
 
     pdash();
-    Ray ray(Point(0, 0, 0), Vector(1, 0, 0));
-    Ray ray2(Point(0, 0, 0), Vector(-1, 0, 0));
+
+    Ray ray(Point(0, 0, 0), Vector(10, 0, 0));
+    Ray ray2(Point(0, 0, 0), Vector(-10, 0, 0));
     Mesh mesh(Point(10, 5, 0), Point(10, -5, -5), Point(10, -6, 7));
     Intersection is;
     assert(!mesh.intersect(ray2, &is));
@@ -37,6 +44,20 @@ int main()
     printf("[u v t]: %.5f %.5f %.5f\n", is.u, is.v, is.t);
     pobj(mesh.uvToPoint(is.u, is.v));
     pobj(ray(is.t));
+
+    pdash();
+
+    OrthoCamera oca(Point(0, 100, 0), Vector(0, -1, 0), Vector(0, 0, 1), 100, 100);
+    StratifiedSampler sampler(800, 600, 0, 800, 0, 600, 1, 0, false);
+    Sample samples[200];
+
+    int n;
+    while (sampler.genSamples(samples, &n))
+        for (int i = 0; i < n; ++i) {
+            Ray ray;
+            oca.genRay(samples[i], &ray);
+            pobj(ray);
+        }
 
     pdash();
 

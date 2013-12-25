@@ -89,9 +89,10 @@ public:
         return v*f;
     }
     string toString() {
-        return (lexical_cast<string>(x) + " " +
-                lexical_cast<string>(y) + " " +
-                lexical_cast<string>(z));
+        return ("(" +
+                lexical_cast<string>(x) + ", " +
+                lexical_cast<string>(y) + ", " +
+                lexical_cast<string>(z) + ")");
     }
 };
 
@@ -178,9 +179,10 @@ public:
         return *this / length();
     }
     string toString() {
-        return (lexical_cast<string>(x) + " " +
-                lexical_cast<string>(y) + " " +
-                lexical_cast<string>(z));
+        return ("(" +
+                lexical_cast<string>(x) + ", " +
+                lexical_cast<string>(y) + ", " +
+                lexical_cast<string>(z) + ")");
     }
 };
 
@@ -230,9 +232,10 @@ public:
         return (*this-rhs).length2();
     }
     string toString() {
-        return (lexical_cast<string>(x) + " " +
-                lexical_cast<string>(y) + " " +
-                lexical_cast<string>(z));
+        return ("(" +
+                lexical_cast<string>(x) + ", " +
+                lexical_cast<string>(y) + ", " +
+                lexical_cast<string>(z) + ")");
     }
 };
 
