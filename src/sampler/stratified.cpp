@@ -25,12 +25,11 @@ void StratifiedSampler::genStratified1D(Float *f, int n)
 StratifiedSampler::StratifiedSampler(
         int imageWidth, int imageHeight,
         int x0, int x1, int y0, int y1, // x0 <= x < x1
-        int samplesPerPixel, int nLight, bool stratified) :
-    imageWidth(width), imageHeight(height),
-    x0(x0), x1(x1), y0(y0), y1(y1), width(x1-x0), height(y1-y0),
-    samplesPerPixel(samplesPerPixel), nLight(nLight), stratified(stratified)
+        int nSample, bool stratified) :
+    imageWidth(width), imageHeight(height), x0(x0), x1(x1), y0(y0), y1(y1),
+    width(x1-x0), height(y1-y0), nSample(nSample), stratified(stratified)
 {
-    numSamplesLeft = numSamples = width * height * samplesPerPixel;
+    numSamplesLeft = numSamples = width * height;
     imageX = new Float[numSamples];
     imageY = new Float[numSamples];
     lensU  = new Float[numSamples];
@@ -38,21 +37,19 @@ StratifiedSampler::StratifiedSampler(
 
     int i = 0;
     for (int x = x0; x < x1; ++x)
-        for (int y = y0; y < y1; ++y)
-            for (int z = 0; z < samplesPerPixel; ++z) {
-                imageX[i] = 1.f / (Float)imageWidth  * ((Float)x + offset());
-                imageY[i] = 1.f / (Float)imageHeight * ((Float)y + offset());
-                ++i;
-            }
+        for (int y = y0; y < y1; ++y) {
+            imageX[i] = 1.f / (Float)imageWidth  * ((Float)x + offset());
+            imageY[i] = 1.f / (Float)imageHeight * ((Float)y + offset());
+            ++i;
+        }
 
     int n = (int)sqrt(width * height);
     for (int x = 0; x < n; ++x)
-        for (int y = 0; y < n; ++y)
-            for (int z = 0; z < samplesPerPixel; ++z) {
-                --i;
-                lensU[i]  = 1.f / (Float)n * ((Float)x + offset());
-                lensV[i]  = 1.f / (Float)n * ((Float)y + offset());
-            }
+        for (int y = 0; y < n; ++y) {
+            --i;
+            lensU[i]  = 1.f / (Float)n * ((Float)x + offset());
+            lensV[i]  = 1.f / (Float)n * ((Float)y + offset());
+        }
     while (i > 0) {
         --i;
         lensU[i] = nextRandomFloat();
@@ -78,21 +75,26 @@ bool StratifiedSampler::genSamples(Sample *samples, int *n)
 {
     *n = 0;
     while (numSamplesLeft > 0 && *n < MAX_SAMPLES) {
-        int i = --numSamplesLeft;
+        int i = numSamples - numSamplesLeft;
+        --numSamplesLeft;
 
         samples[*n].imageX = imageX[i];
         samples[*n].imageY = imageY[i];
         samples[*n].lensU = lensU[i];
         samples[*n].lensV = lensV[i];
 
-        samples[*n].nLight = nLight;
-        genStratified1D(samples[*n].lightU, nLight);
-        genStratified1D(samples[*n].lightV, nLight);
-        genStratified1D(samples[*n].bxdfU, nLight);
-        genStratified1D(samples[*n].bxdfV, nLight);
-        genStratified1D(samples[*n].bxdfI, nLight);
+        samples[*n].nSample = nSample;
+        samples[*n].index = 0;
 
-        *n += 1;
+        genStratified1D(samples[*n].lightU, nSample);
+        genStratified1D(samples[*n].lightV, nSample);
+        genStratified1D(samples[*n].lightI, nSample);
+        genStratified1D(samples[*n].lightJ, nSample);
+        genStratified1D(samples[*n].bxdfU, nSample);
+        genStratified1D(samples[*n].bxdfV, nSample);
+        genStratified1D(samples[*n].bxdfI, nSample);
+
+        (*n) += 1;
     }
 
     return numSamplesLeft > 0;
@@ -100,7 +102,7 @@ bool StratifiedSampler::genSamples(Sample *samples, int *n)
 
 int StratifiedSampler::getSamplesCount()
 {
-    return std::min(MAX_SAMPLES, numSamples * samplesPerPixel);
+    return std::min(MAX_SAMPLES, numSamples);
 }
 
 int StratifiedSampler::roundSize(int size)

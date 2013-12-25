@@ -12,24 +12,20 @@ class Intersection;
 
 class Mesh {
 public:
-    Point a, b, c;
+    const Point a, b, c;
+    const Normal na, nb, nc;
+    bool nn;
+
     Normal n;
-    Normal na, nb, nc;
 
-    Mesh() { }
-    Mesh(const Point &a, const Point &b, const Point &c) : a(a), b(b), c(c) {
-        n = Normal((b-a).cross(c-b).normalize());
-    }
+    Mesh(const Point &a, const Point &b, const Point &c);
     Mesh(const Point &a, const Point &b, const Point &c,
-         const Normal &na, const Normal &nb, const Normal &nc) :
-        a(a), b(b), c(c), na(na), nb(nb), nc(nc)
-    {
-        n = Normal((b-a).cross(c-b).normalize());
-    }
-
+         const Normal &na, const Normal &nb, const Normal &nc);
     BBox getBBox();
     bool intersect(const Ray &ray, Intersection *is);
     Point uvToPoint(Float u, Float v);
+    Normal uvToNormal(Float u, Float v);
+    Float area();
 };
 
 VSRAY_NAMESPACE_END

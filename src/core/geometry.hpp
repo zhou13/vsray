@@ -5,8 +5,8 @@
 VSRAY_NAMESPACE_BEGIN
 
 class Vector;
+class Normal;
 class Point;
-class Ray;
 
 class Vector {
 public:
@@ -109,7 +109,7 @@ public:
     Normal() : x(0), y(0), z(0) { }
     Normal(Float x, Float y, Float z) : x(x), y(y), z(z) { assert(!isNaN()); }
     explicit Normal(const Vector &v) : x(v.x), y(v.y), z(v.z) { }
-    explicit operator Vector() const {
+    operator Vector() const {
         return Vector(x, y, z);
     }
     bool isNaN() const {
@@ -164,10 +164,8 @@ public:
     Float dot(const Normal &rhs) const {
         return x*rhs.x + y*rhs.y + z*rhs.z;
     }
-    Normal cross(const Normal &rhs) const {
-        return Normal(y * rhs.z - z * rhs.y,
-                      z * rhs.x - x * rhs.z,
-                      x * rhs.y - y * rhs.x);
+    Float dot(const Vector &rhs) const {
+        return x*rhs.x + y*rhs.y + z*rhs.z;
     }
     Float length() const {
         return sqrt(x*x + y*y + z*z);

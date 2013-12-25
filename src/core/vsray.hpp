@@ -31,7 +31,7 @@ namespace vsray {
     typedef uint32_t intflt_t;
 #endif
     const Float PI = Float(3.141592653589793238462);
-    const Float PI = 1.f / PI;
+    const Float INV_PI = 1.f / PI;
 }
 
 #include <boost/shared_ptr.hpp>

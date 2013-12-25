@@ -9,21 +9,26 @@ public:
     Float imageX, imageY;
     Float lensU, lensV;
 
-    int nLight;
-    Float *lightU, *lightV;
+    Float *lightU, *lightV, *lightI, *lightJ;
     Float *bxdfU, *bxdfV, *bxdfI;
 
-    Sample(int nLight = 0): nLight(nLight) {
-        lightU = new Float[nLight];
-        lightV = new Float[nLight];
-        bxdfU = new Float[nLight];
-        bxdfV = new Float[nLight];
-        bxdfI = new Float[nLight];
+    int nSample, index;
+
+    Sample(int nSample = 0): nSample(nSample), index(0) {
+        lightU = new Float[nSample];
+        lightV = new Float[nSample];
+        lightI = new Float[nSample];
+        lightJ = new Float[nSample];
+        bxdfU = new Float[nSample];
+        bxdfV = new Float[nSample];
+        bxdfI = new Float[nSample];
     }
 
     ~Sample() {
         delete[] lightU;
         delete[] lightV;
+        delete[] lightI;
+        delete[] lightJ;
         delete[] bxdfU;
         delete[] bxdfV;
         delete[] bxdfI;

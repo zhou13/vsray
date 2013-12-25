@@ -12,7 +12,7 @@ public:
     StratifiedSampler(
             int imageWidth, int imageHeight,
             int x0, int x1, int y0, int y1, // x0 <= x < x1
-            int samplesPerPixel, int nLight, bool stratified);
+            int nSample, bool stratified);
     ~StratifiedSampler();
 
     virtual bool genSamples(Sample *samples, int *n);
@@ -22,8 +22,7 @@ public:
 private:
     int imageWidth, imageHeight;
     int x0, x1, y0, y1, width, height;
-    int samplesPerPixel;
-    int nLight;
+    int nSample;
     bool stratified;
 
     int numSamples;

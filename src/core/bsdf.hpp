@@ -4,16 +4,15 @@
 
 VSRAY_NAMESPACE_BEGIN
 
-class Vector;
+class Sample;
 
-class BxDF {
+class BSDF {
 public:
-    virtual Spectrum f(const Vector &wo, const Vector &wi) = 0;
-    virtual Spectrum sampleF(
+    Spectrum f(const Vector &wo, const Vector &wi) = 0;
+    Spectrum sampleF(
             const Vector &wo,
             const Vector *wi,
-            Float u,
-            Float v,
+            Sample &sample,
             Float *pdf) = 0;
 };
 

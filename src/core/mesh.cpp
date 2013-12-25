@@ -6,6 +6,19 @@
 
 VSRAY_NAMESPACE_BEGIN
 
+Mesh::Mesh(const Point &a, const Point &b, const Point &c) :
+    a(a), b(b), c(c), nn(false)
+{
+    n = Normal((b - a).cross(c - b).normalize());
+}
+
+Mesh::Mesh(const Point &a, const Point &b, const Point &c,
+           const Normal &na, const Normal &nb, const Normal &nc) :
+    a(a), b(b), c(c), na(na), nb(nb), nc(nc), nn(true)
+{
+    n = Normal((b - a).cross(c - b).normalize());
+}
+
 BBox Mesh::getBBox()
 {
     return BBox(a).merge(BBox(b)).merge(BBox(c));
@@ -48,6 +61,23 @@ Point Mesh::uvToPoint(Float u, Float v)
 {
     Float w = 1 - u - v;
     return Point(Vector(a) * u + Vector(b) * v + Vector(c) * w);
+}
+
+Normal Mesh::uvToNormal(Float u, Float v)
+{
+    if (!nn)
+        return n;
+    Float w = 1 - u - v;
+    return (Normal(na) * u + Normal(nb) * v + Normal(nc) * w).normalize();
+}
+
+Float Mesh::area()
+{
+    Float ab = a.distance(b);
+    Float bc = b.distance(c);
+    Float ca = c.distance(a);
+    Float pp = (ab + bc + ca) / 2.f;
+    return sqrt(pp * (pp - ab) * (pp - bc) * (pp - ca));
 }
 
 VSRAY_NAMESPACE_END

@@ -1,3 +1,4 @@
+#include "core/mcmc.hpp"
 #include "core/sample.hpp"
 #include "core/sampler.hpp"
 #include "core/ray.hpp"

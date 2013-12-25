@@ -31,21 +31,21 @@ inline void uniformTriangle(Float u, Float v, Float *uu, Float *vv)
 inline void cosineHemisphere(Float u, Float v, Vector *vec)
 {
     uniformDisk(u, v, &vec->x, &vec->y);
-    vec->z = sqrt(max(Float(0), 1 - (vec->x) * (vec->x) - (vec->y) * (vec->y)));
+    vec->z = sqrt(std::max(Float(0), 1.f - (vec->x) * (vec->x) - (vec->y) * (vec->y)));
+}
+
+inline Float misBalanceHeuristic(int cntF, Float pdfF, int cntG, Float pdfG)
+{
+    Float f = (Float)cntF * pdfF;
+    Float g = (Float)cntG * pdfG;
+    return f / (f + g);
 }
 
 inline Float misPowerHeuristic(int cntF, Float pdfF, int cntG, Float pdfG)
 {
-    Float f = cntF * pdfF;
-    Float g = cntG * pdfG;
-    return f / (f + g);
-}
-
-inline Float misPowerHeuristic(int cntF, int pdfF, int cntG, int pdfG)
-{
-    Float f = cntF * pdfF;
-    Float g = cntG * pdfG;
-    return f*f / (f*f + g*g);
+    Float f = (Float)cntF * pdfF;
+    Float g = (Float)cntG * pdfG;
+    return f * f / (f * f + g * g);
 }
 
 VSRAY_NAMESPACE_END

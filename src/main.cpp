@@ -1,14 +1,16 @@
-#include "core/vsray.hpp"
+#include "core/intersection.hpp"
+#include "core/film.hpp"
 #include "core/matrix.hpp"
-#include "core/transform.hpp"
+#include "core/ray.hpp"
+#include "core/sample.hpp"
 #include "core/shape.hpp"
 #include "core/spectrum.hpp"
-#include "core/sample.hpp"
-#include "core/film.hpp"
+#include "core/transform.hpp"
+#include "core/vsray.hpp"
 #include "camera/orthographic.hpp"
 #include "camera/perspective.hpp"
-#include "sampler/stratified.hpp"
 #include "filter/gaussian.hpp"
+#include "sampler/stratified.hpp"
 
 #include <iostream>
 
@@ -50,7 +52,7 @@ int main()
     pdash();
 
     OrthoCamera oca(Point(0, 100, 0), Vector(0, -1, 0), Vector(0, 0, 1), 100, 100);
-    StratifiedSampler sampler(800, 600, 0, 800, 0, 600, 1, 0, false);
+    StratifiedSampler sampler(800, 600, 0, 800, 0, 600, 0, false);
     Sample samples[200];
     Film film(800, 600, new GaussianFilter());
 

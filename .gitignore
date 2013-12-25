@@ -1,4 +1,5 @@
-*.gch
+*.pch
+*.pch
 *.swp
 /bin
 /obj
