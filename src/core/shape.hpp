@@ -36,7 +36,7 @@ public:
 
     virtual bool getSurface(Intersection *is) = 0;
 
-private:
+protected:
     object_pool<Mesh> pool;
 };
 

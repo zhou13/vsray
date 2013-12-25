@@ -19,14 +19,14 @@ DEFINES = -D__DEBUG_BUILD
 CXXFLAGS += -fsanitize=address
 CXXFLAGS += -O0 -g
 CXXFLAGS += -std=c++11
-CXXFLAGS += -Wall -Wextra -Wconversion -Wno-unused-private-field
+CXXFLAGS += -Wall -Wextra -Wconversion #-Wno-unused-private-field
 CXXFLAGS += $(INCLUDE_DIR)
-#CXXFLAGS += $(shell pkg-config --libs --cflags opencv)
+CXXFLAGS += $(shell pkg-config --cflags opencv)
 #CXXFLAGS += -fopenmp
 
-LDFLAGS = -lboost_system
+LDFLAGS = -lboost_system $(shell pkg-config --libs opencv)
 
-CXX = clang++
+CXX = gcc-4.8.2
 CXXSOURCES = $(shell find src/ -name "*.cpp")
 OBJS = $(addprefix $(OBJ_DIR)/,$(CXXSOURCES:.cpp=.o))
 DEPFILES = $(OBJS:.o=.d)

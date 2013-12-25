@@ -4,9 +4,6 @@
 
 VSRAY_NAMESPACE_BEGIN
 
-void uniformUVSphere(Float u, Float v, Float *phi, Float *theta);
-void uniformDisk(Float u, Float v, Float *r, Float *theta);
-
 class Sample;
 
 class Sampler {

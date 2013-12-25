@@ -26,6 +26,8 @@ private:
     Filter *filter;
     int width, height;
     Float dx, dy;
+
+    Float clamp(Float v, Float min, Float max);
 };
 
 VSRAY_NAMESPACE_END

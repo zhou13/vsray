@@ -17,6 +17,12 @@ public:
         std::fill_n(v, 3, f);
     }
 
+    RGBSpectrum(Float r, Float g, Float b) {
+        v[0] = r;
+        v[1] = g;
+        v[2] = b;
+    }
+
     RGBSpectrum(const Float *f) {
         std::copy_n(f, 3, v);
     }
@@ -31,7 +37,7 @@ public:
         return v[index];
     }
 
-    void getRGB(float rgb[3]) {
+    void getRGB(Float rgb[3]) {
         rgb[0] = v[0];
         rgb[1] = v[1];
         rgb[2] = v[2];

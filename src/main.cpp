@@ -4,9 +4,11 @@
 #include "core/shape.hpp"
 #include "core/spectrum.hpp"
 #include "core/sample.hpp"
+#include "core/film.hpp"
 #include "camera/orthographic.hpp"
 #include "camera/perspective.hpp"
 #include "sampler/stratified.hpp"
+#include "filter/gaussian.hpp"
 
 #include <iostream>
 
@@ -50,15 +52,17 @@ int main()
     OrthoCamera oca(Point(0, 100, 0), Vector(0, -1, 0), Vector(0, 0, 1), 100, 100);
     StratifiedSampler sampler(800, 600, 0, 800, 0, 600, 1, 0, false);
     Sample samples[200];
+    Film film(800, 600, new GaussianFilter());
 
     int n;
     while (sampler.genSamples(samples, &n))
         for (int i = 0; i < n; ++i) {
             Ray ray;
             oca.genRay(samples[i], &ray);
-            pobj(ray);
+            film.addSample(samples[i], Spectrum(.5f, .5f, .5f));
         }
 
+    film.saveToDisk("hello.png");
     pdash();
 
     return 0;
