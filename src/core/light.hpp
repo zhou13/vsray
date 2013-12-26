@@ -14,6 +14,7 @@ public:
     virtual Spectrum sampleL(
             const Point &p, Vector *wi, Sample &sample, Float *pdf) = 0;
     virtual bool isPointLight() = 0;
+    virtual ~Light() { }
 };
 
 VSRAY_NAMESPACE_END

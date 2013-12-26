@@ -1,14 +1,13 @@
 #pragma once
 
-#include "core/vsray.hpp"
-#include "core/geometry.hpp"
 #include "core/bbox.hpp"
-
+#include "core/geometry.hpp"
+#include "core/intersection.hpp"
+#include "core/vsray.hpp"
 
 VSRAY_NAMESPACE_BEGIN
 
 class Ray;
-class Intersection;
 
 class Mesh {
 public:

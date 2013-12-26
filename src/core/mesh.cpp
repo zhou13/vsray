@@ -53,6 +53,10 @@ bool Mesh::intersect(const Ray &ray, Intersection *is)
         is->t = tt;
         is->ray = &ray;
         is->mesh = this;
+
+        is->nn = n;
+        is->p = uvToPoint(uu, vv);
+        is->sn = uvToNormal(uu, vv);
     }
     return true;
 }

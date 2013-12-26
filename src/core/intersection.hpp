@@ -2,12 +2,14 @@
 
 #include "core/vsray.hpp"
 #include "core/geometry.hpp"
+#include "core/bbox.hpp"
 
 VSRAY_NAMESPACE_BEGIN
 
 class Mesh;
 class Ray;
 class Shape;
+class BSDF;
 
 class Intersection {
 public:
@@ -18,11 +20,11 @@ public:
 
     const Ray *ray;
     const Mesh *mesh;
-    const Shape *shape;
+    const BSDF *bsdf;
 
     Intersection() :
         u(0), v(0), ray(nullptr),
-        mesh(nullptr), shape(nullptr) { }
+        mesh(nullptr), bsdf(nullptr) { }
 };
 
 VSRAY_NAMESPACE_END
