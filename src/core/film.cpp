@@ -5,10 +5,12 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+#include <mutex>
+
 VSRAY_NAMESPACE_BEGIN
 
 Film::Film(int width, int height, Filter *filter) :
-    filter(filter), width(width), height(height)
+    width(width), height(height), filter(filter)
 {
     image = new Pixel[width * height];
     dx = dy = filter->size;
@@ -29,8 +31,12 @@ Float Film::clamp(Float v, Float min, Float max)
     return v;
 }
 
+static std::mutex filmMutex;
+
 void Film::addSample(const Sample &sample, Spectrum sp)
 {
+    std::unique_lock<std::mutex> lock(filmMutex);
+
     Float x = (Float)width  * sample.imageX - 0.5f;
     Float y = (Float)height * sample.imageY - 0.5f;
 
@@ -49,6 +55,8 @@ void Film::addSample(const Sample &sample, Spectrum sp)
 
 void Film::saveToDisk(string filename)
 {
+    std::unique_lock<std::mutex> lock(filmMutex);
+
     using namespace cv;
 
     Mat img(height, width, CV_8UC3, Scalar::all(0));

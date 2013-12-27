@@ -7,15 +7,20 @@
 
 VSRAY_NAMESPACE_BEGIN
 
+class Camera;
+
 class Scene {
 public:
     Primitive *primitive;
+    Camera *camera;
     vector<Light *> lights;
 
-    Scene(Primitive *primitive, const vector<Light *> &lights);
+    Scene(Primitive *primitive, Camera *camera);
+    Scene(Primitive *primitive, Camera *camera, const vector<Light *> &lights);
     ~Scene();
 
-    virtual bool intersect(const Ray &ray, Intersection *is) const;
+    void addLight(Light *lights);
+    bool intersect(const Ray &ray, Intersection *is) const;
 };
 
 VSRAY_NAMESPACE_END

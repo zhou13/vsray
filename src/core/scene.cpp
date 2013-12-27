@@ -1,16 +1,26 @@
 #include "core/vsray.hpp"
 #include "core/scene.hpp"
 #include "core/intersection.hpp"
+#include "core/camera.hpp"
 
 VSRAY_NAMESPACE_BEGIN
 
-Scene::Scene(Primitive *primitive, const vector<Light *> &lights) :
-    primitive(primitive), lights(lights)
+Scene::Scene(Primitive *primitive, Camera *camera) :
+    primitive(primitive), camera(camera)
 {
+    // pass
 }
 
-Scene::~Scene()
+Scene::Scene(Primitive *primitive, Camera *camera,
+             const vector<Light *> &lights) :
+    primitive(primitive), camera(camera), lights(lights)
 {
+    // pass
+}
+
+void Scene::addLight(Light *light)
+{
+    lights.push_back(light);
 }
 
 bool Scene::intersect(const Ray &ray, Intersection *is) const

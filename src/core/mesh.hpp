@@ -22,6 +22,8 @@ public:
          const Normal &na, const Normal &nb, const Normal &nc);
     BBox getBBox();
     bool intersect(const Ray &ray, Intersection *is);
+    void fillIntersection(Intersection *is);
+
     Point uvToPoint(Float u, Float v);
     Normal uvToNormal(Float u, Float v);
     Float area();

@@ -8,8 +8,10 @@ class Ray {
 public:
     Point o;
     Vector d;
-    Ray() { }
-    Ray(const Point &o, const Vector &d): o(o), d(d) { }
+    mutable Float maxT;
+
+    Ray(): maxT(INFINITY) { }
+    Ray(const Point &o, const Vector &d): o(o), d(d), maxT(INFINITY) { }
     Point operator ()(Float t) {
         return o + t * d;
     }

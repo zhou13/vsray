@@ -20,11 +20,11 @@ public:
     ~Film();
     void addSample(const Sample &sample, Spectrum sp);
     void saveToDisk(string filename);
+    int width, height;
 
 private:
     Pixel *image;
     Filter *filter;
-    int width, height;
     Float dx, dy;
 
     Float clamp(Float v, Float min, Float max);

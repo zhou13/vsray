@@ -1,14 +1,9 @@
-#
-# $File: Makefile
-# $Date: Thu Jun 27 02:56:32 2013 +0800
-#
 # A single output portable Makefile for
 # simple c++ project
 
 OBJ_DIR = obj
 BIN_DIR = bin
 TARGET = vsray
-HEADER = src/core/vsray.hpp
 
 BIN_TARGET = $(BIN_DIR)/$(TARGET)
 
@@ -24,21 +19,21 @@ CXXFLAGS += $(INCLUDE_DIR)
 CXXFLAGS += $(shell pkg-config --cflags opencv)
 #CXXFLAGS += -fopenmp
 
-LDFLAGS = -lboost_system $(shell pkg-config --libs opencv)
+LDFLAGS = -lboost_system -lboost_thread-mt $(shell pkg-config --libs opencv)
 
-CXX = gcc-4.8.2
+CXX = g++-4.8.2
 CXXSOURCES = $(shell find src/ -name "*.cpp")
 OBJS = $(addprefix $(OBJ_DIR)/,$(CXXSOURCES:.cpp=.o))
 DEPFILES = $(OBJS:.o=.d)
-PCHFILE = $(HEADER:.hpp=.hpp.pch)
 
 .PHONY: all clean run rebuild gdb
 
 all: $(BIN_TARGET)
 
 
-$(OBJ_DIR)/%.o: %.cpp $(PCHFILE)
+$(OBJ_DIR)/%.o: %.cpp
 	@echo "[cc] $< ..."
+	@echo $(CXX) -c $< $(CXXFLAGS) -o $@
 	@$(CXX) -c $< $(CXXFLAGS) -o $@
 
 $(OBJ_DIR)/%.d: %.cpp
@@ -47,9 +42,6 @@ $(OBJ_DIR)/%.d: %.cpp
 	@$(CXX) $(INCLUDE_DIR) $(CXXFLAGS) -MM -MT "$(OBJ_DIR)/$(<:.cpp=.o) $(OBJ_DIR)/$(<:.cpp=.d)" "$<" > "$@"
 
 sinclude $(DEPFILES)
-
-$(PCHFILE): $(HEADER)
-	@$(CXX) -w $< $(CXXFLAGS) -o $@
 
 $(BIN_TARGET): $(OBJS)
 	@echo "[link] $< ..."

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __VSRAY__HEADER
+#define __VSRAY__HEADER
 
 #define VSRAY_NAMESPACE_BEGIN namespace vsray {
 #define VSRAY_NAMESPACE_END   }
@@ -34,8 +35,6 @@ namespace vsray {
     const Float INV_PI = 1.f / PI;
 }
 
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/pool/object_pool.hpp>
 
@@ -56,12 +55,14 @@ namespace vsray {
 
     using std::string;
     using std::vector;
+    using std::shared_ptr;
+    using std::make_shared;
 
     using boost::lexical_cast;
-    using boost::shared_ptr;
-    using boost::make_shared;
     using boost::object_pool;
 }
 
 #define pobj(x) fprintf(stderr, "Line(%d): %s\n", __LINE__, (x).toString().c_str())
 #define pdash() fprintf(stderr, "============================================================\n")
+
+#endif

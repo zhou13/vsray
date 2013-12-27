@@ -15,17 +15,23 @@ Spectrum Lambertian::f(const Vector &, const Vector &)
     return invR;
 }
 
+Float Lambertian::pdf(const Vector &, const Vector &wi)
+{
+    return abs(wi.z * INV_PI);
+}
+
 Spectrum Lambertian::sampleF(
         const Vector &wo,
         Vector *wi,
         Float u,
         Float v,
-        Float *pdf)
+        Float *pdf_)
 {
     cosineHemisphere(u, v, wi);
     if (wo.z < 0)
         wi->z = -1.f;
-    *pdf = abs(wi->z * INV_PI);
+    if (pdf_)
+        *pdf_ = pdf(wo, *wi);
     return invR;
 }
 

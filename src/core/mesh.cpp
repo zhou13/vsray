@@ -37,28 +37,33 @@ bool Mesh::intersect(const Ray &ray, Intersection *is)
         return false;
     deno = 1.f / deno;
 
-    Float uu = s1.dot(s) * deno;
-    if (!float_ge0(uu))
+    Float u = s1.dot(s) * deno;
+    if (!float_ge0(u))
         return false;
-    Float vv = s2.dot(ray.d) * deno;
-    if (!float_ge0(vv) || !float_le(uu + vv, 1))
+    Float v = s2.dot(ray.d) * deno;
+    if (!float_ge0(v) || !float_le(u + v, 1))
         return false;
-    Float tt = s2.dot(e2) * deno;
-    if (float_le0(tt))
+    Float t = s2.dot(e2) * deno;
+    if (float_le0(t) || t > ray.maxT)
         return false;
 
     if (is) {
-        is->u = uu;
-        is->v = vv;
-        is->t = tt;
+        ray.maxT = t;
+
+        is->u = u;
+        is->v = v;
+        is->t = t;
         is->ray = &ray;
         is->mesh = this;
-
-        is->nn = n;
-        is->p = uvToPoint(uu, vv);
-        is->sn = uvToNormal(uu, vv);
     }
     return true;
+}
+
+void Mesh::fillIntersection(Intersection *is)
+{
+    is->nn = n;
+    is->p  = uvToPoint(is->u, is->v);
+    is->sn = uvToNormal(is->u, is->v);
 }
 
 Point Mesh::uvToPoint(Float u, Float v)

@@ -16,15 +16,14 @@ public:
     Float u, v;
     Float t;
     Point p;
+
     Normal nn, sn;
 
     const Ray *ray;
     const Mesh *mesh;
-    const BSDF *bsdf;
+    shared_ptr<BSDF> bsdf;
 
-    Intersection() :
-        u(0), v(0), ray(nullptr),
-        mesh(nullptr), bsdf(nullptr) { }
+    Intersection() : u(0), v(0), ray(nullptr), mesh(nullptr) { }
 };
 
 VSRAY_NAMESPACE_END

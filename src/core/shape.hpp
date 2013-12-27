@@ -17,6 +17,7 @@ public:
     size_t size() const;
 
     virtual bool intersect(const Ray &ray, Intersection *is) const;
+    virtual ~Shape() { }
 
 protected:
     object_pool<Mesh> pool;
