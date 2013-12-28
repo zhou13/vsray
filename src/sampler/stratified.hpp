@@ -13,7 +13,8 @@ public:
             int imageWidth,
             int imageHeight,
             int nSamplePerPixel,
-            int nSampleExtra,
+            int nLight,
+            int nBSDF,
             bool stratified);
     virtual ~StratifiedSampler();
 
@@ -27,7 +28,6 @@ private:
     int imageWidth, imageHeight;
     int x0, x1, y0, y1, width, height;
     int nSamplePerPixel;
-    int nSampleExtra;
     bool stratified;
 
     int numSamples;
@@ -36,9 +36,10 @@ private:
     Float *imageX, *imageY;
     Float *lensU, *lensV;
 
-    Float offset();
-    void genStratified1D(Float *f, int n);
+    bool initialized;
 
+    Float offset();
+    void genStratified1D(Float **f, int n);
 };
 
 VSRAY_NAMESPACE_END

@@ -8,6 +8,7 @@ class Sample;
 
 class Sampler {
 public:
+    Sampler(int nLight, int nBSDF) : nLight(nLight), nBSDF(nBSDF) { }
     virtual ~Sampler() { }
     virtual Sampler *duplicate() = 0;
 
@@ -15,6 +16,8 @@ public:
     virtual bool genSamples(Sample *samples, int *n) = 0;
     virtual int getSamplesCount() = 0;
     virtual int roundSize(int size) = 0;
+
+    int nLight, nBSDF;
 };
 
 VSRAY_NAMESPACE_END

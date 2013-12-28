@@ -9,9 +9,9 @@ class Shape;
 class Intersection;
 class Material;
 
-class MaterialPrimitive {
+class MaterialPrimitive : public Primitive{
 public:
-    MaterialPrimitive(const Primitive *primitive, Material *bsdf);
+    MaterialPrimitive(const Primitive *primitive, Material *material);
     virtual bool intersect(const Ray &ray, Intersection *is) const;
 
 private:

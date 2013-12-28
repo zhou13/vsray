@@ -7,7 +7,7 @@ class Scene;
 class Render;
 class Light;
 
-class DirectIntegrator : SurfaceIntegrator {
+class DirectIntegrator : public SurfaceIntegrator {
 public:
     DirectIntegrator(Scene *scene, bool sampleLight);
     void setRender(Render *render);

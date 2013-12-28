@@ -4,11 +4,7 @@
 
 VSRAY_NAMESPACE_BEGIN
 
-class BSDF;
-class Intersection;
-
-// BxDF + Texture = Material
-class StupidMaterial {
+class StupidMaterial : public Material {
 public:
     virtual shared_ptr<BSDF> getBSDF(Intersection *is);
 };

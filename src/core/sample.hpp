@@ -12,16 +12,18 @@ public:
     Float *lightU, *lightV, *lightI, *lightJ;
     Float *bxdfU, *bxdfV, *bxdfI;
 
-    int nSample, index;
+    int nLight, nBSDF, idxLight, idxBSDF;
 
-    Sample(int nSample = 0): nSample(nSample), index(0) {
-        lightU = new Float[nSample];
-        lightV = new Float[nSample];
-        lightI = new Float[nSample];
-        lightJ = new Float[nSample];
-        bxdfU = new Float[nSample];
-        bxdfV = new Float[nSample];
-        bxdfI = new Float[nSample];
+    Sample()
+    {
+        nLight = nBSDF = idxLight = idxBSDF = 0;
+        lightU = nullptr;
+        lightV = nullptr;
+        lightI = nullptr;
+        lightJ = nullptr;
+        bxdfU = nullptr;
+        bxdfV = nullptr;
+        bxdfI = nullptr;
     }
 
     ~Sample() {

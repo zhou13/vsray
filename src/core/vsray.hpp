@@ -62,7 +62,8 @@ namespace vsray {
     using boost::object_pool;
 }
 
-#define pobj(x) fprintf(stderr, "Line(%d): %s\n", __LINE__, (x).toString().c_str())
+#define pobj(x) fprintf(stderr, "[%s::%d] %s\n", __FILE__, __LINE__, (x).toString().c_str())
 #define pdash() fprintf(stderr, "============================================================\n")
+#define UNUSED(x) (void)x
 
 #endif

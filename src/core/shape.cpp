@@ -10,8 +10,6 @@ VSRAY_NAMESPACE_BEGIN
 
 Mesh *Shape::sampleMesh(Float w) const
 {
-    int index = int((Float)size() * w);
-    return meshes[index];
 }
 
 size_t Shape::size() const

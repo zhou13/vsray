@@ -25,19 +25,19 @@ void BSDF::addBxDF(BxDF *bxdf)
     bxdfs.push_back(bxdf);
 }
 
-Vector BSDF::worldToSurface(const Vector &v) const
+inline Vector BSDF::worldToSurface(const Vector &v) const
 {
     return Vector(v.dot(ex), v.dot(ey), v.dot(ez));
 }
 
-Vector BSDF::surfaceToWorld(const Vector &v) const
+inline Vector BSDF::surfaceToWorld(const Vector &v) const
 {
     return Vector(ex * v.x + ey * v.y + ez * v.z);
 }
 
 Float BSDF::pdf(const Vector &wo, const Vector &wi) const
 {
-    Float p;
+    Float p = 0.f;
     for (auto b: bxdfs)
         p += b->pdf(wo, wi);
     return p / (Float)bxdfs.size();
@@ -62,7 +62,7 @@ Spectrum BSDF::sampleF(
 {
     Vector wo = worldToSurface(wo_);
 
-    int idx = sample.index;
+    int idx = sample.idxBSDF;
     int k = int(sample.bxdfI[idx] * (Float)bxdfs.size());
     bxdfs[k]->sampleF(wo, wi, sample.bxdfU[idx], sample.bxdfV[idx], nullptr);
 

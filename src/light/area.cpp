@@ -14,28 +14,34 @@ AreaLight::AreaLight(const Shape *shape, Spectrum emit):
 }
 
 Spectrum AreaLight::sampleL(
-        const Point &obj, Vector *wi, Sample &sample, Float *pdf)
+        const Point &obj, Vector *wi, Float *len, Sample &sample, Float *pdf)
 {
-    int idx = sample.index;
-
-    Point pLight;
-    Mesh *m = shape->sampleMesh(sample.lightJ[idx]);
+    int idx = sample.idxLight;
+    Mesh *m = shape->meshes[int(Float(shape->meshes.size()) * sample.lightJ[idx])];
     
     Float u, v;
     uniformTriangle(sample.lightU[idx], sample.lightV[idx], &u, &v);
-    *pdf = m->pdf(obj, wi, u, v);
 
-    if (*pdf == 0)
+    Point p = m->uvToPoint(u, v);
+    *wi = (p - obj).normalize();
+    if (m->n.dot(*wi) >= 0.f)
+        return 0.f;
+
+    *len = obj.distance2(p);
+    *pdf = abs(*len / (m->uvToNormal(u, v).dot(*wi) * m->area));
+    if (*pdf == 0.f)
         return Spectrum(0.f);
+    *len = sqrt(*len);
+    *pdf *= -m->area * m->n.dot(*wi) / (Float)shape->meshes.size();
 
+    /*
     Float sumProjectArea = 0.f;
     for (auto mesh: shape->meshes) {
-        Float projectRatio = mesh->n.dot(*wi);
+        Float projectRatio = -mesh->n.dot(*wi);
         if (projectRatio > 0)
             sumProjectArea += mesh->area * projectRatio;
     }
-
-    *pdf *= m->area * m->n.dot(*wi) / sumProjectArea;
+    */
 
     return emit;
 }

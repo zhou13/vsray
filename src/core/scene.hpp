@@ -17,7 +17,6 @@ public:
 
     Scene(Primitive *primitive, Camera *camera);
     Scene(Primitive *primitive, Camera *camera, const vector<Light *> &lights);
-    ~Scene();
 
     void addLight(Light *lights);
     Light* sampleLight(Float number);

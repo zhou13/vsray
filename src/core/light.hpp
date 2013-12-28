@@ -12,7 +12,11 @@ class Sample;
 class Light {
 public:
     virtual Spectrum sampleL(
-            const Point &p, Vector *wi, Sample &sample, Float *pdf) = 0;
+            const Point &obj,
+            Vector *wi,
+            Float *len,
+            Sample &sample,
+            Float *pdf) = 0;
     virtual bool isPointLight() = 0;
     virtual ~Light() { }
 };

@@ -11,8 +11,8 @@ INCLUDE_DIR = -I src
 DEFINES = -D__DEBUG_BUILD
 
 
-CXXFLAGS += -fsanitize=address
-CXXFLAGS += -O0 -g
+# CXXFLAGS += -fsanitize=address
+CXXFLAGS += -O2 -pg
 CXXFLAGS += -std=c++11
 CXXFLAGS += -Wall -Wextra -Wconversion #-Wno-unused-private-field
 CXXFLAGS += $(INCLUDE_DIR)
@@ -33,7 +33,6 @@ all: $(BIN_TARGET)
 
 $(OBJ_DIR)/%.o: %.cpp
 	@echo "[cc] $< ..."
-	@echo $(CXX) -c $< $(CXXFLAGS) -o $@
 	@$(CXX) -c $< $(CXXFLAGS) -o $@
 
 $(OBJ_DIR)/%.d: %.cpp
@@ -62,4 +61,4 @@ gdb: $(BIN_TARGET)
 	gdb ./$(BIN_TARGET)
 
 show: 
-	geeqie output.png
+	pq output.png

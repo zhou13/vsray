@@ -10,15 +10,20 @@ StratifiedSampler::StratifiedSampler(
         int imageWidth,
         int imageHeight,
         int nSamplePerPixel,
-        int nSampleExtra,
+        int nLight,
+        int nBSDF,
         bool stratified) :
+    Sampler(nLight, nBSDF),
     imageWidth(imageWidth),
     imageHeight(imageHeight),
     nSamplePerPixel(nSamplePerPixel),
-    nSampleExtra(nSampleExtra),
-    stratified(stratified)
+    stratified(stratified), initialized(false)
 {
-    // pass
+    imageX = nullptr;
+    imageX = nullptr;
+    imageY = nullptr;
+    lensU = nullptr;
+    lensV = nullptr;
 }
 
 StratifiedSampler::~StratifiedSampler()
@@ -35,7 +40,7 @@ Sampler *StratifiedSampler::duplicate()
             imageWidth,
             imageHeight,
             nSamplePerPixel,
-            nSampleExtra,
+            nLight, nBSDF,
             stratified);
 }
 
@@ -78,10 +83,13 @@ void StratifiedSampler::initialize(int x0, int x1, int y0, int y1)
         std::swap(lensU[i], lensU[j]);
         std::swap(lensV[i], lensV[j]);
     }
+
+    initialized = true;
 }
 
 bool StratifiedSampler::genSamples(Sample *samples, int *n)
 {
+    assert(initialized);
     *n = 0;
     while (numSamplesLeft > 0 && *n < MAX_SAMPLES) {
         int i = numSamples - numSamplesLeft;
@@ -92,16 +100,18 @@ bool StratifiedSampler::genSamples(Sample *samples, int *n)
         samples[*n].lensU = lensU[i];
         samples[*n].lensV = lensV[i];
 
-        samples[*n].nSample = nSampleExtra;
-        samples[*n].index = 0;
+        samples[*n].nLight = nLight;
+        samples[*n].nBSDF = nBSDF;
+        samples[*n].idxLight = 0;
+        samples[*n].idxBSDF = 0;
 
-        genStratified1D(samples[*n].lightU, nSampleExtra);
-        genStratified1D(samples[*n].lightV, nSampleExtra);
-        genStratified1D(samples[*n].lightI, nSampleExtra);
-        genStratified1D(samples[*n].lightJ, nSampleExtra);
-        genStratified1D(samples[*n].bxdfU, nSampleExtra);
-        genStratified1D(samples[*n].bxdfV, nSampleExtra);
-        genStratified1D(samples[*n].bxdfI, nSampleExtra);
+        genStratified1D(&samples[*n].lightU, nLight);
+        genStratified1D(&samples[*n].lightV, nLight);
+        genStratified1D(&samples[*n].lightI, nLight);
+        genStratified1D(&samples[*n].lightJ, nLight);
+        genStratified1D(&samples[*n].bxdfU, nBSDF);
+        genStratified1D(&samples[*n].bxdfV, nBSDF);
+        genStratified1D(&samples[*n].bxdfI, nBSDF);
 
         (*n) += 1;
     }
@@ -123,16 +133,19 @@ Float StratifiedSampler::offset()
 {
     if (stratified)
         return nextRandomFloat();
-    return 0;
+    return .5f;
 }
 
-void StratifiedSampler::genStratified1D(Float *f, int n)
+void StratifiedSampler::genStratified1D(Float **f, int n)
 {
+    if (*f == nullptr)
+        *f = new Float[n];
+
     Float gap = 1.f / (Float)n;
     for (int i = 0; i < n; ++i)
-        f[i] = ((Float)i + offset()) * gap;
+        (*f)[i] = ((Float)i + offset()) * gap;
     for (int i = 0; i < n; ++i)
-        std::swap(f[i], f[nextRandomInt(n)]);
+        std::swap((*f)[i], (*f)[nextRandomInt(n)]);
 }
 
 

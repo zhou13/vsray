@@ -1,16 +1,24 @@
-#include "core/intersection.hpp"
+#include "camera/orthographic.hpp"
+#include "camera/perspective.hpp"
 #include "core/film.hpp"
+#include "core/intersection.hpp"
 #include "core/matrix.hpp"
 #include "core/ray.hpp"
+#include "core/render.hpp"
 #include "core/sample.hpp"
+#include "core/scene.hpp"
 #include "core/shape.hpp"
 #include "core/spectrum.hpp"
 #include "core/transform.hpp"
 #include "core/vsray.hpp"
-#include "camera/orthographic.hpp"
-#include "camera/perspective.hpp"
 #include "filter/gaussian.hpp"
+#include "integrator/direct.hpp"
+#include "light/area.hpp"
+#include "material/stupid.hpp"
+#include "primitive/adapter.hpp"
+#include "primitive/material.hpp"
 #include "sampler/stratified.hpp"
+#include "shape/polygon.hpp"
 
 #include <iostream>
 
@@ -51,21 +59,66 @@ int main()
 
     pdash();
 
-    OrthoCamera oca(Point(0, 100, 0), Vector(0, -1, 0), Vector(0, 0, 1), 100, 100);
-    StratifiedSampler sampler(800, 600, 1, 0, false);
-    sampler.initialize(0, 800, 0, 600);
-    Sample samples[200];
-    Film film(800, 600, new GaussianFilter());
+    // OrthoCamera oca(Point(0, 100, 0), Vector(0, -1, 0), Vector(0, 0, 1), 100, 100);
+    // StratifiedSampler sampler(800, 600, 1, 0, 0, false);
+    // sampler.initialize(0, 800, 0, 600);
+    // Sample samples[200];
+    // Film film(800, 600, new GaussianFilter());
 
-    int n;
-    while (sampler.genSamples(samples, &n))
-        for (int i = 0; i < n; ++i) {
-            Ray ray;
-            oca.genRay(samples[i], &ray);
-            film.addSample(samples[i], Spectrum(.5f, .5f, .5f));
-        }
+    // int n;
+    // for (;;) {
+    //     bool b = sampler.genSamples(samples, &n);
+    //     for (int i = 0; i < n; ++i) {
+    //         Ray ray;
+    //         // pobj(samples[i]);
+    //         oca.genRay(samples[i], &ray);
+    //         film.addSample(samples[i], Spectrum(.1f, .1f, .1f));
+    //     }
+    //     if (!b)
+    //         break;
+    // }
 
-    film.saveToDisk("hello.png");
+    // fflush(stdout);
+    // film.saveToDisk("hello.png");
+
+    // pdash();
+    // pdash();
+
+    OrthoCamera oca2(Point(0, 0, 10), Vector(0, 0, -1), Vector(0, 1, 0), 15, 15);
+    StratifiedSampler sampler2(800, 800, 1, 16, 0, false);
+    Film film2(800, 800, new GaussianFilter());
+
+    object_pool<Mesh> pool;
+    vector<Point> vec;
+    vec.push_back(Point(-10, -10, 0));
+    vec.push_back(Point(+10, -10, 0));
+    vec.push_back(Point(+10, +10, 0));
+    vec.push_back(Point(-10, +10, 0));
+
+    Polygon poly(vec, &pool);
+    AdapterPrimitive adpt(&poly);
+    StupidMaterial smat;
+    MaterialPrimitive matpt(&adpt, &smat);
+    Scene scene(&matpt, &oca2);
+
+    vector<Point> vec2;
+    vec2.push_back(Point(-1, -1, 5));
+    vec2.push_back(Point(-1, +1, 5));
+    vec2.push_back(Point(+1, +1, 5));
+    vec2.push_back(Point(+1, -1, 5));
+    Polygon poly2(vec2, &pool);
+
+    AreaLight areaLight(&poly2, Spectrum(30.f));
+
+    scene.addLight(&areaLight);
+
+    DirectIntegrator di(&scene, false);
+    Render render(&scene, &film2, &sampler2, &di);
+    di.setRender(&render);
+    render.run();
+    film2.saveToDisk("whitepaper.png");
+
+    pdash();
     pdash();
 
     return 0;

@@ -8,7 +8,7 @@ class Ray;
 class Shape;
 class Intersection;
 
-class AdapterPrimitive {
+class AdapterPrimitive : public Primitive {
 public:
     AdapterPrimitive(const Shape *shape);
     virtual bool intersect(const Ray &ray, Intersection *is) const;

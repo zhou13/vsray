@@ -117,7 +117,7 @@ public:
     }
 
     RGBSpectrum &operator/=(const Float rhs) {
-        assert(rhs != 1);
+        assert(rhs != 0);
         for (int i = 0; i < 3; ++i)
             v[i] /= rhs;
         return *this;
@@ -128,6 +128,13 @@ public:
         for (int i = 0; i < 3; ++i)
             r[i] *= f;
         return r;
+    }
+
+    string toString() {
+        return "( " +
+            lexical_cast<string>(v[0]) + " " +
+            lexical_cast<string>(v[1]) + " " +
+            lexical_cast<string>(v[2]) + " )";
     }
 };
 

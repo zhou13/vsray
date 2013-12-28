@@ -37,13 +37,13 @@ void Film::addSample(const Sample &sample, Spectrum sp)
 {
     std::unique_lock<std::mutex> lock(filmMutex);
 
-    Float x = (Float)width  * sample.imageX - 0.5f;
-    Float y = (Float)height * sample.imageY - 0.5f;
+    Float x = (Float)width  * sample.imageX;
+    Float y = (Float)height * sample.imageY;
 
     int i0 = (int)std::max(ceil(y-dy), 0.f);
     int j0 = (int)std::max(ceil(x-dx), 0.f);
-    int i1 = (int)std::min(floor(y+dy), (Float)height);
-    int j1 = (int)std::min(floor(x+dx), (Float)width);
+    int i1 = (int)std::min(floor(y+dy), (Float)height - 0.5f);
+    int j1 = (int)std::min(floor(x+dx), (Float)width - 0.5f);
 
     for (int i = i0; i <= i1; ++i)
         for (int j = j0; j <= j1; ++j) {
@@ -67,7 +67,11 @@ void Film::saveToDisk(string filename)
             int k = i * width + j;
             Float rgb[3];
 
-            (image[k].color / image[k].weight).getRGB(rgb);
+            if (image[k].weight == 0.f) {
+                rgb[0] = rgb[1] = rgb[2] = 0.f;
+            } else {
+                (image[k].color / image[k].weight).getRGB(rgb);
+            }
             m[i * (int)img.step + j * 3 + 0] = (uint8_t)clamp(rgb[2] * 255, 0, 255);
             m[i * (int)img.step + j * 3 + 1] = (uint8_t)clamp(rgb[1] * 255, 0, 255);
             m[i * (int)img.step + j * 3 + 2] = (uint8_t)clamp(rgb[0] * 255, 0, 255);

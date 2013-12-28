@@ -10,11 +10,11 @@ class Sample;
 class Point;
 class Vector;
 
-class AreaLight {
+class AreaLight : public Light {
 public:
     AreaLight(const Shape *shape, Spectrum emit);
     virtual Spectrum sampleL(
-            const Point &obj, Vector *wi, Sample &sample, Float *pdf);
+            const Point &obj, Vector *wi, Float *len, Sample &sample, Float *pdf);
     virtual bool isPointLight();
 
 private:

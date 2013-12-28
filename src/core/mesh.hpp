@@ -22,17 +22,15 @@ public:
     Mesh(const Point &a, const Point &b, const Point &c);
     Mesh(const Point &a, const Point &b, const Point &c,
          const Normal &na, const Normal &nb, const Normal &nc);
-    BBox getBBox();
-    bool intersect(const Ray &ray, Intersection *is);
-    void fillIntersection(Intersection *is);
+    BBox getBBox() const;
+    bool intersect(const Ray &ray, Intersection *is) const;
+    void fillIntersection(Intersection *is) const;
 
-    Point uvToPoint(Float u, Float v);
-    Normal uvToNormal(Float u, Float v);
-
-    Float pdf(const Point &obj, Vector *wi, Float u, Float v);
+    Point uvToPoint(Float u, Float v) const;
+    Normal uvToNormal(Float u, Float v) const;
 
 private:
-    Float getArea();
+    Float getArea() const;
 };
 
 VSRAY_NAMESPACE_END

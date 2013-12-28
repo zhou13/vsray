@@ -10,7 +10,7 @@ class Sample;
 
 class SurfaceIntegrator {
 public:
-    virtual Spectrum radiance(Sample &sample, Intersection &is);
+    virtual Spectrum radiance(Sample &sample, Intersection &is) = 0;
 };
 
 VSRAY_NAMESPACE_END

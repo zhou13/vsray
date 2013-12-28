@@ -13,7 +13,8 @@ MaterialPrimitive::MaterialPrimitive(const Primitive *primitive, Material *mater
 bool MaterialPrimitive::intersect(const Ray &ray, Intersection *is) const
 {
     if (primitive->intersect(ray, is)) {
-        is->bsdf = material->getBSDF(is);
+        if (is)
+            is->bsdf = material->getBSDF(is);
         return true;
     }
     return false;

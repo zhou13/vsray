@@ -21,12 +21,12 @@ Mesh::Mesh(const Point &a, const Point &b, const Point &c,
     area = getArea();
 }
 
-BBox Mesh::getBBox()
+BBox Mesh::getBBox() const
 {
     return BBox(a).merge(BBox(b)).merge(BBox(c));
 }
 
-bool Mesh::intersect(const Ray &ray, Intersection *is)
+bool Mesh::intersect(const Ray &ray, Intersection *is) const
 {
     Vector e1 = a - c;
     Vector e2 = b - c;
@@ -61,20 +61,20 @@ bool Mesh::intersect(const Ray &ray, Intersection *is)
     return true;
 }
 
-void Mesh::fillIntersection(Intersection *is)
+void Mesh::fillIntersection(Intersection *is) const
 {
     is->nn = n;
     is->p  = uvToPoint(is->u, is->v);
     is->sn = uvToNormal(is->u, is->v);
 }
 
-Point Mesh::uvToPoint(Float u, Float v)
+Point Mesh::uvToPoint(Float u, Float v) const
 {
     Float w = 1 - u - v;
     return Point(Vector(a) * u + Vector(b) * v + Vector(c) * w);
 }
 
-Normal Mesh::uvToNormal(Float u, Float v)
+Normal Mesh::uvToNormal(Float u, Float v) const
 {
     if (!nn)
         return n;
@@ -82,18 +82,7 @@ Normal Mesh::uvToNormal(Float u, Float v)
     return (Normal(na) * u + Normal(nb) * v + Normal(nc) * w).normalize();
 }
 
-Float Mesh::pdf(const Point &obj, Vector *wi, Float u, Float v)
-{
-    Point p = uvToPoint(u, v);
-    *wi = (p - obj).normalize();
-    if (n.dot(*wi) <= 0.f)
-        return 0.f;
-
-    Float pdf = obj.distance2(p) / (uvToNormal(u, v).dot(*wi) * area);
-    return abs(pdf);
-}
-
-Float Mesh::getArea()
+Float Mesh::getArea() const
 {
     Float ab = a.distance(b);
     Float bc = b.distance(c);
