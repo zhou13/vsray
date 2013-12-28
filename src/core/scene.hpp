@@ -20,6 +20,7 @@ public:
     ~Scene();
 
     void addLight(Light *lights);
+    Light* sampleLight(Float number);
     bool intersect(const Ray &ray, Intersection *is) const;
 };
 

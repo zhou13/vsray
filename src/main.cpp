@@ -52,7 +52,8 @@ int main()
     pdash();
 
     OrthoCamera oca(Point(0, 100, 0), Vector(0, -1, 0), Vector(0, 0, 1), 100, 100);
-    StratifiedSampler sampler(800, 600, 0, 800, 0, 600, 0, false);
+    StratifiedSampler sampler(800, 600, 1, 0, false);
+    sampler.initialize(0, 800, 0, 600);
     Sample samples[200];
     Film film(800, 600, new GaussianFilter());
 

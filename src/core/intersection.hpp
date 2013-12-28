@@ -3,6 +3,7 @@
 #include "core/vsray.hpp"
 #include "core/geometry.hpp"
 #include "core/bbox.hpp"
+#include "core/spectrum.hpp"
 
 VSRAY_NAMESPACE_BEGIN
 
@@ -22,8 +23,9 @@ public:
     const Ray *ray;
     const Mesh *mesh;
     shared_ptr<BSDF> bsdf;
+    Spectrum radiance;
 
-    Intersection() : u(0), v(0), ray(nullptr), mesh(nullptr) { }
+    Intersection() : u(0), v(0), ray(nullptr), mesh(nullptr), radiance(0.f) { }
 };
 
 VSRAY_NAMESPACE_END

@@ -35,6 +35,14 @@ Vector BSDF::surfaceToWorld(const Vector &v) const
     return Vector(ex * v.x + ey * v.y + ez * v.z);
 }
 
+Float BSDF::pdf(const Vector &wo, const Vector &wi) const
+{
+    Float p;
+    for (auto b: bxdfs)
+        p += b->pdf(wo, wi);
+    return p / (Float)bxdfs.size();
+}
+
 Spectrum BSDF::f(const Vector &wo_, const Vector &wi_) const
 {
     Vector wo = worldToSurface(wo_);

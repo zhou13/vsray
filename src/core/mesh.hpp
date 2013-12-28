@@ -17,6 +17,8 @@ public:
 
     Normal n;
 
+    Float area;
+
     Mesh(const Point &a, const Point &b, const Point &c);
     Mesh(const Point &a, const Point &b, const Point &c,
          const Normal &na, const Normal &nb, const Normal &nc);
@@ -26,7 +28,11 @@ public:
 
     Point uvToPoint(Float u, Float v);
     Normal uvToNormal(Float u, Float v);
-    Float area();
+
+    Float pdf(const Point &obj, Vector *wi, Float u, Float v);
+
+private:
+    Float getArea();
 };
 
 VSRAY_NAMESPACE_END

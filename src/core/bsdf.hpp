@@ -15,6 +15,7 @@ public:
     BSDF(const Intersection *is);
     ~BSDF();
     void addBxDF(BxDF *bxdf);
+    Float pdf(const Vector &wo, const Vector &wi) const;
     Spectrum f(const Vector &wo, const Vector &wi) const;
     Spectrum sampleF(
             const Vector &wo,

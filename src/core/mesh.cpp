@@ -10,6 +10,7 @@ Mesh::Mesh(const Point &a, const Point &b, const Point &c) :
     a(a), b(b), c(c), nn(false)
 {
     n = Normal((b - a).cross(c - b).normalize());
+    area = getArea();
 }
 
 Mesh::Mesh(const Point &a, const Point &b, const Point &c,
@@ -17,6 +18,7 @@ Mesh::Mesh(const Point &a, const Point &b, const Point &c,
     a(a), b(b), c(c), na(na), nb(nb), nc(nc), nn(true)
 {
     n = Normal((b - a).cross(c - b).normalize());
+    area = getArea();
 }
 
 BBox Mesh::getBBox()
@@ -80,7 +82,18 @@ Normal Mesh::uvToNormal(Float u, Float v)
     return (Normal(na) * u + Normal(nb) * v + Normal(nc) * w).normalize();
 }
 
-Float Mesh::area()
+Float Mesh::pdf(const Point &obj, Vector *wi, Float u, Float v)
+{
+    Point p = uvToPoint(u, v);
+    *wi = (p - obj).normalize();
+    if (n.dot(*wi) <= 0.f)
+        return 0.f;
+
+    Float pdf = obj.distance2(p) / (uvToNormal(u, v).dot(*wi) * area);
+    return abs(pdf);
+}
+
+Float Mesh::getArea()
 {
     Float ab = a.distance(b);
     Float bc = b.distance(c);

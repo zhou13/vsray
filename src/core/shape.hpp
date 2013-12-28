@@ -13,14 +13,16 @@ class Shape {
 public:
     vector<Mesh *> meshes;
 
-    Mesh *samplePoint(Float w, Float u, Float v, Point *p) const;
+    Mesh *sampleMesh(Float w) const;
+    Float pdf();
     size_t size() const;
+    void addMesh(Mesh *m);
 
-    virtual bool intersect(const Ray &ray, Intersection *is) const;
-    virtual ~Shape() { }
+    bool intersect(const Ray &ray, Intersection *is) const;
+    ~Shape() { }
 
 protected:
-    object_pool<Mesh> pool;
+    object_pool<Mesh> *pool;
 };
 
 VSRAY_NAMESPACE_END

@@ -98,6 +98,31 @@ public:
         return r;
     }
 
+    RGBSpectrum &operator+=(const Float rhs) {
+        for (int i = 0; i < 3; ++i)
+            v[i] += rhs;
+        return *this;
+    }
+
+    RGBSpectrum &operator-=(const Float rhs) {
+        for (int i = 0; i < 3; ++i)
+            v[i] -= rhs;
+        return *this;
+    }
+
+    RGBSpectrum &operator*=(const Float rhs) {
+        for (int i = 0; i < 3; ++i)
+            v[i] *= rhs;
+        return *this;
+    }
+
+    RGBSpectrum &operator/=(const Float rhs) {
+        assert(rhs != 1);
+        for (int i = 0; i < 3; ++i)
+            v[i] /= rhs;
+        return *this;
+    }
+
     friend RGBSpectrum operator*(const Float f, const RGBSpectrum &s) {
         RGBSpectrum r(s.v);
         for (int i = 0; i < 3; ++i)

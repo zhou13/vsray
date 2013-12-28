@@ -3,6 +3,7 @@
 #include "core/geometry.hpp"
 #include "core/sample.hpp"
 #include "core/mesh.hpp"
+#include "core/mcmc.hpp"
 
 VSRAY_NAMESPACE_BEGIN
 
@@ -18,20 +19,23 @@ Spectrum AreaLight::sampleL(
     int idx = sample.index;
 
     Point pLight;
-    Mesh *m = shape->samplePoint(
-            sample.lightJ[idx],
-            sample.lightU[idx],
-            sample.lightV[idx],
-            &pLight
-    );
-    *wi = (pLight - obj).normalize();
-    *pdf = obj.distance2(pLight) / (
-            m->uvToNormal(
-                    sample.lightU[idx],
-                    sample.lightV[idx]
-            ).dot(*wi) * m->area()
-    );
-    *pdf = abs(*pdf);
+    Mesh *m = shape->sampleMesh(sample.lightJ[idx]);
+    
+    Float u, v;
+    uniformTriangle(sample.lightU[idx], sample.lightV[idx], &u, &v);
+    *pdf = m->pdf(obj, wi, u, v);
+
+    if (*pdf == 0)
+        return Spectrum(0.f);
+
+    Float sumProjectArea = 0.f;
+    for (auto mesh: shape->meshes) {
+        Float projectRatio = mesh->n.dot(*wi);
+        if (projectRatio > 0)
+            sumProjectArea += mesh->area * projectRatio;
+    }
+
+    *pdf *= m->area * m->n.dot(*wi) / sumProjectArea;
 
     return emit;
 }

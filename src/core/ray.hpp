@@ -11,7 +11,8 @@ public:
     mutable Float maxT;
 
     Ray(): maxT(INFINITY) { }
-    Ray(const Point &o, const Vector &d): o(o), d(d), maxT(INFINITY) { }
+    Ray(const Point &o, const Vector &d, Float maxT = INFINITY) :
+        o(o), d(d), maxT(maxT) { }
     Point operator ()(Float t) {
         return o + t * d;
     }

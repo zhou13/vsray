@@ -8,11 +8,9 @@
 
 VSRAY_NAMESPACE_BEGIN
 
-Mesh *Shape::samplePoint(Float w, Float u, Float v, Point *p) const
+Mesh *Shape::sampleMesh(Float w) const
 {
     int index = int((Float)size() * w);
-    uniformTriangle(u, v, &u, &v);
-    *p = meshes[index]->uvToPoint(u, v);
     return meshes[index];
 }
 

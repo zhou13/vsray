@@ -10,11 +10,15 @@ class Sample;
 class StratifiedSampler : public Sampler {
 public:
     StratifiedSampler(
-            int imageWidth, int imageHeight,
-            int x0, int x1, int y0, int y1, // x0 <= x < x1
-            int nSample, bool stratified);
-    ~StratifiedSampler();
+            int imageWidth,
+            int imageHeight,
+            int nSamplePerPixel,
+            int nSampleExtra,
+            bool stratified);
+    virtual ~StratifiedSampler();
 
+    virtual Sampler *duplicate();
+    virtual void initialize(int x0, int x1, int y0, int y1);
     virtual bool genSamples(Sample *samples, int *n);
     virtual int getSamplesCount();
     virtual int roundSize(int size);
@@ -22,7 +26,8 @@ public:
 private:
     int imageWidth, imageHeight;
     int x0, x1, y0, y1, width, height;
-    int nSample;
+    int nSamplePerPixel;
+    int nSampleExtra;
     bool stratified;
 
     int numSamples;
