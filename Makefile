@@ -11,7 +11,7 @@ INCLUDE_DIR = -I src
 DEFINES = -D__DEBUG_BUILD
 
 
-# CXXFLAGS += -fsanitize=address
+CXXFLAGS += -fsanitize=address
 CXXFLAGS += -O2 -pg
 CXXFLAGS += -std=c++11
 CXXFLAGS += -Wall -Wextra -Wconversion #-Wno-unused-private-field

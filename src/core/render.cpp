@@ -6,8 +6,8 @@
 
 VSRAY_NAMESPACE_BEGIN
 
-const int PATCH_SIZE = 100;
-const unsigned int MAX_NUM_THREADS = 1;
+const int PATCH_SIZE = 200;
+const unsigned int MAX_NUM_THREADS = 8;
 
 Render::Render(
         Scene *scene, Film *film, Sampler *sampler, SurfaceIntegrator *si) :
@@ -44,6 +44,7 @@ void Render::subtaskRun()
         int idx = globalIndex++;
         if (idx >= (int)patchQueue.size())
             return;
+        std::cout << idx << std::endl;
 
         int x0 = patchQueue[idx].first;
         int y0 = patchQueue[idx].second;
