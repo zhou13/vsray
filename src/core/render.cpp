@@ -71,6 +71,7 @@ void Render::subtaskRun()
             for (int i = 0; i < n; ++i) {
                 Ray ray;
                 scene->camera->genRay(samples[i], &ray);
+                // pobj(ray);
                 film->addSample(samples[i], raytrace(samples[i], ray));
             }
             if (!b)

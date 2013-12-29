@@ -16,7 +16,7 @@ public:
            Film *film,
            Sampler *sampler,
            SurfaceIntegrator *si,
-           uint32_t maxThread);
+           uint32_t maxThread = 100);
 
     void run();
     void subtaskRun();

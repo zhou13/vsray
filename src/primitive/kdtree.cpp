@@ -14,14 +14,15 @@ const int MASK30 = 0x3FFFFFFF;
 
 const int STACK_SIZE = 30;
 
-KdTree::KdTree(Meshset *meshset)
+KdTree::KdTree(Meshset *meshset): time(0)
 {
     for (int i = 0; i < (int)meshset->size(); ++i)
         addPrimitive((*meshset)[i]);
 }
 
-void KdTree::initilize()
+void KdTree::initialize()
 {
+    visited.resize(items.size(), 0);
     vector<BBox> primBBox;
     int maxDepth = (int)ceil(8.f + 1.3f * log2((real)items.size()));
     for (auto p: items) {
@@ -67,7 +68,7 @@ void KdTree::buildKdTree(
 
         real bestCost = T_SECT * (real)prims.size();
         real cutPosition = 0.f;
-        size_t cutIndex = -1;
+        int cutIndex = -1;
 
         for (size_t i = 0; i < line.size(); ++i) {
             real v = std::get<0>(line[i]);
@@ -89,7 +90,7 @@ void KdTree::buildKdTree(
 
                 if (cost < bestCost) {
                     bestCost = cost;
-                    cutIndex = i;
+                    cutIndex = (int)i;
                     cutPosition = v;
                 }
             }
@@ -100,8 +101,8 @@ void KdTree::buildKdTree(
 
         vector<uint32_t> prim0;
         vector<uint32_t> prim1;
-        if (cutIndex != ~0u) {
-            for (size_t i = 0; i < cutIndex; ++i)
+        if (cutIndex != -1) {
+            for (size_t i = 0; i < (size_t)cutIndex; ++i)
                 if (!std::get<1>(line[i]))
                     prim0.push_back(std::get<2>(line[i]));
             for (size_t i = cutIndex+1; i < line.size(); ++i)
@@ -151,6 +152,12 @@ BBox KdTree::getBBox() const
 
 bool KdTree::intersect(const Ray &ray, Intersection *is, real epilson) const
 {
+    ++time;
+    if (time == UINT32_MAX) {
+        time = 1;
+        fill(visited.begin(), visited.end(), 0u);
+    }
+
     auto node = &tree[0];
     tuple<real, real, decltype(node)> stack[STACK_SIZE];
     int top = 0;
@@ -164,9 +171,13 @@ bool KdTree::intersect(const Ray &ray, Intersection *is, real epilson) const
         if (minT >  ray.maxT)
             break;
         if (node->flag == KDTREE_LEAF) {
-            for (uint32_t i = node->itemID; i < node->itemID + node->itemCnt; ++i)
+            for (uint32_t i = node->itemID; i < node->itemID + node->itemCnt; ++i) {
+                if (visited[primID[i]] == time)
+                    continue;
+                visited[primID[i]] = time;
                 if (items[primID[i]]->intersect(ray, is, epilson))
                     return true;
+            }
             if (top == 0)
                 break;
 

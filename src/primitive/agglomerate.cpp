@@ -1,4 +1,5 @@
 #include "primitive/agglomerate.hpp"
+#include "core/intersection.hpp"
 
 VSRAY_NAMESPACE_BEGIN
 
@@ -19,8 +20,9 @@ bool Agglomerate::intersect(const Ray &ray, Intersection *is, real epsilon) cons
 {
     bool b = false;
     for (auto p: items) {
-        if (p->intersect(ray, is, epsilon))
+        if (p->intersect(ray, is, epsilon)) {
             b = true;
+        }
     }
     return b;
 }

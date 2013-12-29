@@ -109,4 +109,9 @@ real Mesh::getArea() const
     return sqrt(pp * (pp - ab) * (pp - bc) * (pp - ca));
 }
 
+string Mesh::toString() const
+{
+    return a.toString() + " " + b.toString() + " " + c.toString();
+}
+
 VSRAY_NAMESPACE_END

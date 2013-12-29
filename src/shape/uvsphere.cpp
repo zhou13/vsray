@@ -49,21 +49,21 @@ UVSphere::UVSphere(
             } else {
                 if (i > 0) {
                     m1 = pool->construct(
-                            std::make_tuple(center + ps[i][j],
-                                            center + ps[i+1][j],
-                                            center + ps[i][j+1]),
-                            std::make_tuple(Normal(ps[i][j]),
-                                            Normal(ps[i+1][j]),
-                                            Normal(ps[i][j+1]))
+                            make_tuple(center + ps[i][j],
+                                       center + ps[i+1][j],
+                                       center + ps[i][j+1]),
+                            make_tuple(Normal(ps[i][j]),
+                                       Normal(ps[i+1][j]),
+                                       Normal(ps[i][j+1]))
                     );
                 }
                 m2 = pool->construct(
-                        std::make_tuple(center + ps[i+1][j+1],
-                                        center + ps[i][j+1],
-                                        center + ps[i+1][j]),
-                        std::make_tuple(Normal(ps[i+1][j+1]),
-                                        Normal(ps[i][j+1]),
-                                        Normal(ps[i+1][j]))
+                        make_tuple(center + ps[i+1][j+1],
+                                   center + ps[i][j+1],
+                                   center + ps[i+1][j]),
+                        make_tuple(Normal(ps[i+1][j+1]),
+                                   Normal(ps[i][j+1]),
+                                   Normal(ps[i+1][j]))
                 );
             }
             if (m1)

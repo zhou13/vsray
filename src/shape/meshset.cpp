@@ -31,11 +31,12 @@ BBox Meshset::getBBox() const
 
 bool Meshset::intersect(const Ray &ray, Intersection *is, real epsilon) const
 {
+    bool b = false;
     for (auto m: meshes) {
         if (m->intersect(ray, is, epsilon))
-            return true;
+            b = true;
     }
-    return false;
+    return b;
 }
 
 VSRAY_NAMESPACE_END

@@ -33,6 +33,7 @@ public:
 
     Point uvToPoint(real u, real v) const;
     Normal uvToNormal(real u, real v) const;
+    string toString() const;
 
 private:
     real getArea() const;

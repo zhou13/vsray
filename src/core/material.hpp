@@ -10,6 +10,7 @@ class Intersection;
 class Material {
 public:
     virtual shared_ptr<BSDF> getBSDF(Intersection *is) = 0;
+    virtual ~Material() { }
 };
 
 VSRAY_NAMESPACE_END

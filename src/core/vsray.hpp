@@ -5,13 +5,13 @@
 #define VSRAY_NAMESPACE_END   }
 
 // C Library
-#include <stdint.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 
 // C++ Library
+#include <cstdint>
 #include <string>
 #include <vector>
 #include <algorithm>

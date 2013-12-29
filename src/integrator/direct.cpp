@@ -62,8 +62,8 @@ Spectrum DirectIntegrator::directIllumination(
 
     Ray ray(is.p, wi, maxT);
     // shadow ray
-    if (scene->intersect(ray, nullptr, is.epsilon))
-        return ret;
+    // if (scene->intersect(ray, nullptr, is.epsilon))
+    //     return ret;
 
     assert(is.bsdf);
     Vector wo = -is.ray->d.normalize();

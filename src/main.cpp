@@ -16,6 +16,7 @@
 #include "light/area.hpp"
 #include "light/point.hpp"
 #include "material/stupid.hpp"
+#include "parser/object.hpp"
 #include "primitive/agglomerate.hpp"
 #include "primitive/material.hpp"
 #include "sampler/stratified.hpp"
@@ -30,38 +31,38 @@ using namespace vsray;
 
 int main()
 {
-    puts("hello world");
-    Matrix4x4 m(99, 4, 1, 2,
-                -1, 0, -1, 2,
-                0, 0, 1, 0,
-                1, 1, 1, 1);
-    printf("%s\n", m.inverse().toString().c_str());
-    printf("%3f\n===========\n", m.det());
+    // puts("hello world");
+    // Matrix4x4 m(99, 4, 1, 2,
+    //             -1, 0, -1, 2,
+    //             0, 0, 1, 0,
+    //             1, 1, 1, 1);
+    // printf("%s\n", m.inverse().toString().c_str());
+    // printf("%3f\n===========\n", m.det());
 
-    Point p(10, 9, 8), p2(0, 0, 10);
-    auto tr = Transform::lookAt(Point(0, 0, 0), Vector(0, 0, 1), Vector(0, 1, 0));
-    auto tr2 = Transform::lookAt(Point(5, 0, 0), Vector(-1, 0, 0), Vector(0, 1, 0));
-    pdash();
+    // Point p(10, 9, 8), p2(0, 0, 10);
+    // auto tr = Transform::lookAt(Point(0, 0, 0), Vector(0, 0, 1), Vector(0, 1, 0));
+    // auto tr2 = Transform::lookAt(Point(5, 0, 0), Vector(-1, 0, 0), Vector(0, 1, 0));
+    // pdash();
 
-    pobj(tr2);
-    pobj(tr2.inverse());
-    pobj(tr2.inverse()(Point(0, 0, 0)));
-    pobj(tr2.inverse()(p));
-    pdash();
+    // pobj(tr2);
+    // pobj(tr2.inverse());
+    // pobj(tr2.inverse()(Point(0, 0, 0)));
+    // pobj(tr2.inverse()(p));
+    // pdash();
 
-    pdash();
+    // pdash();
 
-    Ray ray(Point(0, 0, 0), Vector(10, 0, 0));
-    Ray ray2(Point(0, 0, 0), Vector(-10, 0, 0));
-    Mesh mesh(Point(10, 5, 0), Point(10, -5, -5), Point(10, -6, 7));
-    Intersection is;
-    assert(!mesh.intersect(ray2, &is, 0.f));
-    assert(mesh.intersect(ray, &is, 0.f));
-    printf("[u v t]: %.5f %.5f %.5f\n", is.u, is.v, is.t);
-    pobj(mesh.uvToPoint(is.u, is.v));
-    pobj(ray(is.t));
+    // Ray ray(Point(0, 0, 0), Vector(10, 0, 0));
+    // Ray ray2(Point(0, 0, 0), Vector(-10, 0, 0));
+    // Mesh mesh(Point(10, 5, 0), Point(10, -5, -5), Point(10, -6, 7));
+    // Intersection is;
+    // assert(!mesh.intersect(ray2, &is, 0.f));
+    // assert(mesh.intersect(ray, &is, 0.f));
+    // printf("[u v t]: %.5f %.5f %.5f\n", is.u, is.v, is.t);
+    // pobj(mesh.uvToPoint(is.u, is.v));
+    // pobj(ray(is.t));
 
-    pdash();
+    // pdash();
 
     // OrthoCamera oca(Point(0, 100, 0), Vector(0, -1, 0), Vector(0, 0, 1), 100, 100);
     // StratifiedSampler sampler(800, 600, 1, 0, 0, false);
@@ -88,49 +89,66 @@ int main()
     // pdash();
     // pdash();
 
-    PerspCamera oca2(Point(0, 0, 1000), Vector(0, 0, -1), Vector(0, 1, 0), 20, 20, 1000);
-    StratifiedSampler sampler2(800, 800, 1, 1, 0, false);
-    Film film2(800, 800, new TriangleFilter(1), "sphere.png");
+    // PerspCamera oca2(Point(0, 0, 1000), Vector(0, 0, -1), Vector(0, 1, 0), 20, 20, 1000);
+    // StratifiedSampler sampler2(800, 800, 1, 1, 0, false);
+    // Film film2(800, 800, new TriangleFilter(1), "sphere.png");
 
-    object_pool<Mesh> pool;
-    vector<Point> vec;
-    vec.push_back(Point(-20, -20, 0));
-    vec.push_back(Point(+20, -20, 0));
-    vec.push_back(Point(+20, +20, 0));
-    vec.push_back(Point(-20, +20, 0));
+    // object_pool<Mesh> pool;
+    // vector<Point> vec;
+    // vec.push_back(Point(-20, -20, 0));
+    // vec.push_back(Point(+20, -20, 0));
+    // vec.push_back(Point(+20, +20, 0));
+    // vec.push_back(Point(-20, +20, 0));
 
-    Polygon poly(vec, &pool);
-    UVSphere uvsphere(Point(0, 0, 8), 5, 8, 40, true, &pool);
+    // Polygon poly(vec, &pool);
+    // UVSphere uvsphere(Point(0, 0, 8), 5, 8, 40, true, &pool);
 
-    StupidMaterial smat;
-    MaterialPrimitive matpt1(&poly, &smat);
-    MaterialPrimitive matpt2(&uvsphere, &smat);
+    // StupidMaterial smat;
+    // MaterialPrimitive matpt1(&poly, &smat);
+    // MaterialPrimitive matpt2(&uvsphere, &smat);
 
-    Agglomerate agg;
-    agg.addPrimitive(&matpt1);
-    agg.addPrimitive(&matpt2);
+    // Agglomerate agg;
+    // agg.addPrimitive(&matpt1);
+    // agg.addPrimitive(&matpt2);
 
-    Scene scene(&agg, &oca2);
+    // Scene scene(&agg, &oca2);
 
-    vector<Point> vec2;
-    vec2.push_back(Point(-1, -1, 20));
-    vec2.push_back(Point(-1, +1, 20));
-    vec2.push_back(Point(+1, +1, 20));
-    vec2.push_back(Point(+1, -1, 20));
-    Polygon poly2(vec2, &pool);
+    // vector<Point> vec2;
+    // vec2.push_back(Point(-1, -1, 20));
+    // vec2.push_back(Point(-1, +1, 20));
+    // vec2.push_back(Point(+1, +1, 20));
+    // vec2.push_back(Point(+1, -1, 20));
+    // Polygon poly2(vec2, &pool);
 
-    AreaLight areaLight(&poly2, Spectrum(50.f));
-    PointLight pointLight(Point(0, 0, 20), 80);
+    // AreaLight areaLight(&poly2, Spectrum(50.f));
+    // PointLight pointLight(Point(0, 0, 20), 80);
 
-    scene.addLight(&pointLight);
+    // scene.addLight(&pointLight);
 
-    DirectIntegrator di(&scene, false);
-    Render render(&scene, &film2, &sampler2, &di, 100);
-    di.setRender(&render);
-    render.run();
+    // DirectIntegrator di(&scene, false);
+    // Render render(&scene, &film2, &sampler2, &di, 100);
+    // di.setRender(&render);
+    // render.run();
 
     pdash();
     pdash();
+
+    StratifiedSampler sampler3(800, 800, 1, 1, 0, false);
+    Film film3(800, 800, new TriangleFilter(1), "sphere.png");
+
+    ObjectParser objp;
+    objp.loadFile("bunny-1000.obj");
+
+    OrthoCamera oca3(Point(5, 0, 0), Vector(-1, 0, 0), Vector(0, 0, 1), 3, 3);
+    Scene scene2(objp.getPrimitives(), &oca3);
+
+    PointLight pointLight2(Point(5, 0, 0), 30);
+    scene2.addLight(&pointLight2);
+
+    DirectIntegrator di2(&scene2, false);
+    Render render2(&scene2, &film3, &sampler3, &di2);
+    di2.setRender(&render2);
+    render2.run();
 
     return 0;
 }

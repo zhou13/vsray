@@ -92,7 +92,7 @@ public:
     friend Vector operator*(float f, const Vector &v) {
         return v*f;
     }
-    string toString() {
+    string toString() const {
         return ("(" +
                 lexical_cast<string>(x) + ", " +
                 lexical_cast<string>(y) + ", " +
@@ -185,7 +185,7 @@ public:
     Normal normalize() const {
         return *this / length();
     }
-    string toString() {
+    string toString() const {
         return ("(" +
                 lexical_cast<string>(x) + ", " +
                 lexical_cast<string>(y) + ", " +
@@ -241,7 +241,7 @@ public:
     real distance2(const Point &rhs) const {
         return (*this-rhs).length2();
     }
-    string toString() {
+    string toString() const {
         return ("(" +
                 lexical_cast<string>(x) + ", " +
                 lexical_cast<string>(y) + ", " +
