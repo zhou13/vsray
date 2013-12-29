@@ -50,17 +50,17 @@ void StratifiedSampler::initialize(int x0, int x1, int y0, int y1)
     height = y1 - y0;
 
     numSamplesLeft = numSamples = width * height * nSamplePerPixel;
-    imageX = new Float[numSamples];
-    imageY = new Float[numSamples];
-    lensU  = new Float[numSamples];
-    lensV  = new Float[numSamples];
+    imageX = new real[numSamples];
+    imageY = new real[numSamples];
+    lensU  = new real[numSamples];
+    lensV  = new real[numSamples];
 
     int i = 0;
     for (int x = x0; x < x1; ++x)
         for (int y = y0; y < y1; ++y)
             for (int k = 0; k < nSamplePerPixel; ++k) {
-            imageX[i] = 1.f / (Float)imageWidth  * ((Float)x + offset());
-            imageY[i] = 1.f / (Float)imageHeight * ((Float)y + offset());
+            imageX[i] = 1.f / (real)imageWidth  * ((real)x + offset());
+            imageY[i] = 1.f / (real)imageHeight * ((real)y + offset());
             ++i;
         }
 
@@ -69,13 +69,13 @@ void StratifiedSampler::initialize(int x0, int x1, int y0, int y1)
         for (int y = 0; y < n; ++y)
             for (int k = 0; k < nSamplePerPixel; ++k) {
                 --i;
-                lensU[i]  = 1.f / (Float)n * ((Float)x + offset());
-                lensV[i]  = 1.f / (Float)n * ((Float)y + offset());
+                lensU[i]  = 1.f / (real)n * ((real)x + offset());
+                lensV[i]  = 1.f / (real)n * ((real)y + offset());
             }
     while (i > 0) {
         --i;
-        lensU[i] = random.nextRandomFloat();
-        lensV[i] = random.nextRandomFloat();
+        lensU[i] = random.nextRandomreal();
+        lensV[i] = random.nextRandomreal();
     }
 
     for (i = 0; i < numSamples; ++i) {
@@ -129,21 +129,21 @@ int StratifiedSampler::roundSize(int size)
     return size;
 }
 
-Float StratifiedSampler::offset()
+real StratifiedSampler::offset()
 {
     if (stratified)
-        return random.nextRandomFloat();
+        return random.nextRandomreal();
     return .5f;
 }
 
-void StratifiedSampler::genStratified1D(Float **f, int n)
+void StratifiedSampler::genStratified1D(real **f, int n)
 {
     if (*f == nullptr)
-        *f = new Float[n];
+        *f = new real[n];
 
-    Float gap = 1.f / (Float)n;
+    real gap = 1.f / (real)n;
     for (int i = 0; i < n; ++i)
-        (*f)[i] = ((Float)i + offset()) * gap;
+        (*f)[i] = ((real)i + offset()) * gap;
     for (int i = 0; i < n; ++i)
         std::swap((*f)[i], (*f)[random.nextRandomInt(n)]);
 }

@@ -1,11 +1,12 @@
 #include "shape/uvsphere.hpp"
 #include "core/mcmc.hpp"
+#include "shape/mesh.hpp"
 
 VSRAY_NAMESPACE_BEGIN
 
 UVSphere::UVSphere(
         const Point &center,
-        Float radius,
+        real radius,
         int cntU,
         int cntV,
         bool inter,
@@ -17,12 +18,12 @@ UVSphere::UVSphere(
 
     vector<vector<Vector>> ps(cntU);
 
-    Float invCntU = 1.f / Float(cntU);
-    Float invCntV = 1.f / Float(cntV);
+    real invCntU = 1.f / real(cntU);
+    real invCntV = 1.f / real(cntV);
     for (int i = 0; i < cntU; ++i) {
         for (int j = 0; j < cntV; ++j) {
             Vector dir;
-            uniformSphere(invCntU * Float(i), invCntV * Float(j), &dir);
+            uniformSphere(invCntU * real(i), invCntV * real(j), &dir);
             ps[i].push_back(radius * dir);
         }
         ps[i].push_back(ps[i][0]);
@@ -30,7 +31,8 @@ UVSphere::UVSphere(
 
     for (int i = 0; i < cntU-1; ++i) {
         for (int j = 0; j < cntV; ++j) {
-            Mesh *m1, *m2;
+            Mesh *m1 = nullptr;
+            Mesh *m2 = nullptr;
             if (!inter) {
                 if (i > 0) {
                     m1 = pool->construct(
@@ -64,7 +66,7 @@ UVSphere::UVSphere(
                                         Normal(ps[i+1][j]))
                 );
             }
-            if (i > 0)
+            if (m1)
                 addMesh(m1);
             addMesh(m2);
         }

@@ -10,13 +10,13 @@ public:
             const Point &from,
             const Vector &to,
             const Vector &up,
-            Float width,
-            Float height);
+            real width,
+            real height);
     virtual void genRay(const Sample &sample, Ray *ray);
 
 private:
-    Float width;
-    Float height;
+    real width;
+    real height;
 };
 
 VSRAY_NAMESPACE_END

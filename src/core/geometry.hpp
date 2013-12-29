@@ -11,13 +11,13 @@ class Vector {
 public:
     union {
         struct {
-            Float x, y, z;
+            real x, y, z;
         };
-        Float f[3];
+        real f[3];
     };
 
     Vector() : x(0), y(0), z(0) { }
-    Vector(Float x, Float y, Float z) : x(x), y(y), z(z) { assert(!isNaN()); }
+    Vector(real x, real y, real z) : x(x), y(y), z(z) { assert(!isNaN()); }
     bool isNaN() const {
         return isnan(x) || isnan(y) || isnan(z);
     }
@@ -42,25 +42,25 @@ public:
     Vector operator -() const {
         return Vector(-x, -y, -z);
     }
-    Vector operator *(Float rhs) const {
+    Vector operator *(real rhs) const {
         assert(!isnan(rhs));
         return Vector(x * rhs, y * rhs, z * rhs);
     }
-    Vector &operator *=(Float rhs) {
+    Vector &operator *=(real rhs) {
         assert(!isnan(rhs));
         x *= rhs;
         y *= rhs;
         z *= rhs;
         return *this;
     }
-    Vector operator /(Float rhs) const {
+    Vector operator /(real rhs) const {
         assert(rhs != 0);
-        Float inv = 1.f / rhs;
+        real inv = 1.f / rhs;
         return Vector(x * inv, y * inv, z * inv);
     }
-    Vector &operator /=(Float rhs) {
+    Vector &operator /=(real rhs) {
         assert(rhs != 0);
-        Float inv = 1.f / rhs;
+        real inv = 1.f / rhs;
         x *= inv;
         y *= inv;
         z *= inv;
@@ -69,7 +69,10 @@ public:
     bool operator ==(const Vector &rhs) const {
         return x == rhs.x && y == rhs.y && z == rhs.z;
     }
-    Float dot(const Vector &rhs) const {
+    real operator [](uint32_t i) const {
+        return f[i];
+    }
+    real dot(const Vector &rhs) const {
         return x*rhs.x + y*rhs.y + z*rhs.z;
     }
     Vector cross(const Vector &rhs) const {
@@ -77,10 +80,10 @@ public:
                       z * rhs.x - x * rhs.z,
                       x * rhs.y - y * rhs.x);
     }
-    Float length() const {
+    real length() const {
         return sqrt(x*x + y*y + z*z);
     }
-    Float length2() const {
+    real length2() const {
         return x*x + y*y + z*z;
     }
     Vector normalize() const {
@@ -102,13 +105,13 @@ class Normal {
 public:
     union {
         struct {
-            Float x, y, z;
+            real x, y, z;
         };
-        Float f[3];
+        real f[3];
     };
 
     Normal() : x(0), y(0), z(0) { }
-    Normal(Float x, Float y, Float z) : x(x), y(y), z(z) { assert(!isNaN()); }
+    Normal(real x, real y, real z) : x(x), y(y), z(z) { assert(!isNaN()); }
     explicit Normal(const Vector &v) : x(v.x), y(v.y), z(v.z) { }
     operator Vector() const {
         return Vector(x, y, z);
@@ -137,25 +140,25 @@ public:
     Normal operator -() const {
         return Normal(-x, -y, -z);
     }
-    Normal operator *(Float rhs) const {
+    Normal operator *(real rhs) const {
         assert(!isnan(rhs));
         return Normal(x * rhs, y * rhs, z * rhs);
     }
-    Normal &operator *=(Float rhs) {
+    Normal &operator *=(real rhs) {
         assert(!isnan(rhs));
         x *= rhs;
         y *= rhs;
         z *= rhs;
         return *this;
     }
-    Normal operator /(Float rhs) const {
+    Normal operator /(real rhs) const {
         assert(rhs != 0);
-        Float inv = 1.f / rhs;
+        real inv = 1.f / rhs;
         return Normal(x * inv, y * inv, z * inv);
     }
-    Normal &operator /=(Float rhs) {
+    Normal &operator /=(real rhs) {
         assert(rhs != 0);
-        Float inv = 1.f / rhs;
+        real inv = 1.f / rhs;
         x *= inv;
         y *= inv;
         z *= inv;
@@ -164,16 +167,19 @@ public:
     bool operator ==(const Normal &rhs) const {
         return x == rhs.x && y == rhs.y && z == rhs.z;
     }
-    Float dot(const Normal &rhs) const {
+    real operator [](uint32_t i) const {
+        return f[i];
+    }
+    real dot(const Normal &rhs) const {
         return x*rhs.x + y*rhs.y + z*rhs.z;
     }
-    Float dot(const Vector &rhs) const {
+    real dot(const Vector &rhs) const {
         return x*rhs.x + y*rhs.y + z*rhs.z;
     }
-    Float length() const {
+    real length() const {
         return sqrt(x*x + y*y + z*z);
     }
-    Float length2() const {
+    real length2() const {
         return x*x + y*y + z*z;
     }
     Normal normalize() const {
@@ -191,13 +197,13 @@ class Point {
 public:
     union {
         struct {
-            Float x, y, z;
+            real x, y, z;
         };
-        Float f[3];
+        real f[3];
     };
 
     Point() : x(0), y(0), z(0) { }
-    Point(Float x, Float y, Float z) : x(x), y(y), z(z) { assert(!isNaN()); }
+    Point(real x, real y, real z) : x(x), y(y), z(z) { assert(!isNaN()); }
     explicit Point(const Vector &v) : x(v.x), y(v.y), z(v.z) { }
     explicit operator Vector() const {
         return Vector(x, y, z);
@@ -226,10 +232,13 @@ public:
     Vector operator -(const Point &rhs) const {
         return Vector(x - rhs.x, y - rhs.y, z - rhs.z);
     }
-    Float distance(const Point &rhs) const {
+    real operator [](uint32_t i) const {
+        return f[i];
+    }
+    real distance(const Point &rhs) const {
         return (*this-rhs).length();
     }
-    Float distance2(const Point &rhs) const {
+    real distance2(const Point &rhs) const {
         return (*this-rhs).length2();
     }
     string toString() {

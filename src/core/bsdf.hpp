@@ -15,13 +15,13 @@ public:
     BSDF(const Intersection *is);
     ~BSDF();
     void addBxDF(BxDF *bxdf);
-    Float pdf(const Vector &wo, const Vector &wi) const;
+    real pdf(const Vector &wo, const Vector &wi) const;
     Spectrum f(const Vector &wo, const Vector &wi) const;
     Spectrum sampleF(
             const Vector &wo,
             Vector *wi,
             Sample &sample,
-            Float *pdf) const;
+            real *pdf) const;
 
 private:
     Vector ex, ey, ez;

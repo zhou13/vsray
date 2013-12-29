@@ -11,22 +11,22 @@ public:
             const Point &from,
             const Vector &to,
             const Vector &up,
-            Float width,
-            Float height,
-            Float depth,
-            Float lensRadius = 0.f,
-            Float focalDistance = 0.f);
+            real width,
+            real height,
+            real depth,
+            real lensRadius = 0.f,
+            real focalDistance = 0.f);
     virtual void genRay(const Sample &sample, Ray *ray);
 
 private:
     void modifyRayDOF(const Sample &sample, Ray *ray);
 
-    Float width;
-    Float height;
-    Float depth;
+    real width;
+    real height;
+    real depth;
 
-    Float lensRadius;
-    Float focalDistance;
+    real lensRadius;
+    real focalDistance;
 };
 
 VSRAY_NAMESPACE_END

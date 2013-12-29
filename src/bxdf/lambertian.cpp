@@ -15,7 +15,7 @@ Spectrum Lambertian::f(const Vector &, const Vector &)
     return invR;
 }
 
-Float Lambertian::pdf(const Vector &, const Vector &wi)
+real Lambertian::pdf(const Vector &, const Vector &wi)
 {
     return abs(wi.z * INV_PI);
 }
@@ -23,9 +23,9 @@ Float Lambertian::pdf(const Vector &, const Vector &wi)
 Spectrum Lambertian::sampleF(
         const Vector &wo,
         Vector *wi,
-        Float u,
-        Float v,
-        Float *pdf_)
+        real u,
+        real v,
+        real *pdf_)
 {
     cosineHemisphere(u, v, wi);
     if (wo.z < 0)

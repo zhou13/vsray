@@ -6,11 +6,11 @@ VSRAY_NAMESPACE_BEGIN
 
 class Sample {
 public:
-    Float imageX, imageY;
-    Float lensU, lensV;
+    real imageX, imageY;
+    real lensU, lensV;
 
-    Float *lightU, *lightV, *lightI, *lightJ;
-    Float *bxdfU, *bxdfV, *bxdfI;
+    real *lightU, *lightV, *lightI, *lightJ;
+    real *bxdfU, *bxdfV, *bxdfI;
 
     int nLight, nBSDF, idxLight, idxBSDF;
 

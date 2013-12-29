@@ -1,8 +1,8 @@
 #pragma once
 
 #include "core/vsray.hpp"
+#include "core/shape.hpp"
 #include "core/geometry.hpp"
-#include "core/bbox.hpp"
 #include "core/spectrum.hpp"
 
 VSRAY_NAMESPACE_BEGIN
@@ -14,18 +14,23 @@ class BSDF;
 
 class Intersection {
 public:
-    Float u, v;
-    Float t, epsilon;
+    real u, v;
+    real t, epsilon;
     Point p;
 
-    Normal nn, sn;
+    Normal nn, sn, ta;
 
     const Ray *ray;
-    const Mesh *mesh;
+    const Shape *shape;
     shared_ptr<BSDF> bsdf;
     Spectrum radiance;
 
-    Intersection() : u(0), v(0), ray(nullptr), mesh(nullptr), radiance(0.f) { }
+    Intersection() :
+        u(0), v(0), ray(nullptr), shape(nullptr), radiance(0.f) { }
+    void fillIntersection() {
+        assert(shape);
+        shape->fillIntersection(this);
+    }
 };
 
 VSRAY_NAMESPACE_END

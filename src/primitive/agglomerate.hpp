@@ -10,12 +10,12 @@ class Intersection;
 
 class Agglomerate : public Primitive {
 public:
-    void addPrimitive(const Primitive *p);
-    virtual bool intersect(const Ray &ray, Intersection *is, Float epilson) const;
+    void addPrimitive(Primitive *p);
+    virtual BBox getBBox() const;
+    virtual bool intersect(const Ray &ray, Intersection *is, real epilson) const;
 
-private:
-    vector<const Primitive *> primitiveSet;
+protected:
+    vector<Primitive *> items;
 };
 
 VSRAY_NAMESPACE_END
-

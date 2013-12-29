@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/meshset.hpp"
+#include "shape/meshset.hpp"
 
 VSRAY_NAMESPACE_BEGIN
 

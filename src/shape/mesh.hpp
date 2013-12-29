@@ -4,12 +4,13 @@
 #include "core/geometry.hpp"
 #include "core/intersection.hpp"
 #include "core/vsray.hpp"
+#include "core/shape.hpp"
 
 VSRAY_NAMESPACE_BEGIN
 
 class Ray;
 
-class Mesh {
+class Mesh : public Shape {
 public:
     const Point a, b, c;
     const Normal na, nb, nc;
@@ -17,7 +18,7 @@ public:
 
     Normal n;
 
-    Float area;
+    real area;
 
     Mesh(const Point &a, const Point &b, const Point &c);
     Mesh(const Point &a, const Point &b, const Point &c,
@@ -26,15 +27,15 @@ public:
     Mesh(const tuple<const Point &, const Point &, const Point &> &p,
          const tuple<const Normal &, const Normal &, const Normal &> &n);
 
-    BBox getBBox() const;
-    bool intersect(const Ray &ray, Intersection *is, Float epilson) const;
-    void fillIntersection(Intersection *is) const;
+    virtual BBox getBBox() const;
+    virtual bool intersect(const Ray &ray, Intersection *is, real epilson) const;
+    virtual void fillIntersection(Intersection *is) const;
 
-    Point uvToPoint(Float u, Float v) const;
-    Normal uvToNormal(Float u, Float v) const;
+    Point uvToPoint(real u, real v) const;
+    Normal uvToNormal(real u, real v) const;
 
 private:
-    Float getArea() const;
+    real getArea() const;
 };
 
 VSRAY_NAMESPACE_END

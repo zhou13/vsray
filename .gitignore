@@ -3,5 +3,5 @@
 *.swp
 /bin
 /obj
-*.png
+/*.png
 gmon.out

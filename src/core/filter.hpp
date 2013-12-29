@@ -6,9 +6,9 @@ VSRAY_NAMESPACE_BEGIN
 
 class Filter {
 public:
-    Float size;
-    Filter(Float size): size(size) { }
-    virtual Float operator()(Float x, Float y) = 0;
+    real size;
+    Filter(real size): size(size) { }
+    virtual real operator()(real x, real y) = 0;
     virtual ~Filter() { }
 };
 

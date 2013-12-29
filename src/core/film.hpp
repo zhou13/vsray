@@ -8,7 +8,7 @@ VSRAY_NAMESPACE_BEGIN
 class Pixel {
 public:
     Spectrum color;
-    Float weight;
+    real weight;
 };
 
 class Sample;
@@ -25,10 +25,10 @@ public:
 private:
     Pixel *image;
     Filter *filter;
-    Float dx, dy;
+    real dx, dy;
     string filename;
 
-    Float clamp(Float v, Float min, Float max);
+    real clamp(real v, real min, real max);
 };
 
 VSRAY_NAMESPACE_END

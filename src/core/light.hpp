@@ -14,10 +14,10 @@ public:
     virtual Spectrum sampleL(
             const Point &obj,
             Vector *wi,
-            Float *len,
+            real *len,
             Sample &sample,
-            Float *pdf) = 0;
-    virtual bool isPointLight() = 0;
+            real *pdf) = 0;
+    virtual bool isDelta() = 0;
     virtual ~Light() { }
 };
 

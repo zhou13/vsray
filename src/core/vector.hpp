@@ -8,13 +8,13 @@ class Vector {
 public:
     union {
         struct {
-            Float x, y, z;
+            real x, y, z;
         };
-        Float f[3];
+        real f[3];
     };
 
     Vector(): x(0), y(0), z(0) { }
-    Vector(Float x, Float y, Float z): x(x), y(y), z(z) { assert(!isNaN()); }
+    Vector(real x, real y, real z): x(x), y(y), z(z) { assert(!isNaN()); }
     bool isNaN() {
         return isnan(x) || isnan(y) || isnan(z);
     }
@@ -39,40 +39,40 @@ public:
     Vector &operator -() const {
         return Vector(-x, -y, -z);
     }
-    Vector &operator *(Float r) const {
+    Vector &operator *(real r) const {
         assert(!isnan(r));
         return Vector(x * r, y * r, z * r);
     }
-    Vector &operator *=(Float r) const {
+    Vector &operator *=(real r) const {
         assert(!isnan(r));
         x *= r;
         y *= r;
         z *= r;
         return *this;
     }
-    Vector &operator /(Float r) const {
+    Vector &operator /(real r) const {
         assert(r != 0);
         return Vector(x / r, y / r, z / r);
     }
-    Vector &operator /=(Float r) const {
+    Vector &operator /=(real r) const {
         assert(r != 0);
         x *= r;
         y *= r;
         z *= r;
         return *this;
     }
-    Float dot(const Vector &r) {
+    real dot(const Vector &r) {
         return x*r.x + y*r.y + z*r.z;
     }
-    Float cross(const Vector &r) {
+    real cross(const Vector &r) {
         return Vector(y * r.z - z * r.y,
                       z * r.x - x * r.z,
                       x * r.y - y * r.x);
     }
-    Float length() {
+    real length() {
         return sqrt(x*x + y*y + z*z);
     }
-    Float length2() {
+    real length2() {
         return x*x + y*y + z*z;
     }
     Vector norm() {

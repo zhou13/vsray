@@ -21,7 +21,7 @@ union float_t {
         uint64_t exponent : 11;
         uint64_t sign : 1;
     } s;
-    float_t(Float f): f(f) { }
+    float_t(real f): f(f) { }
 };
 #else
 const double  FLOAT_MAX_ABS = FLT_MAX_ABS;
@@ -35,13 +35,13 @@ union float_t {
         uint32_t exponent : 8;
         uint32_t sign : 1;
     };
-    float_t(Float f): f(f) { }
+    float_t(real f): f(f) { }
 };
 #endif
 
-inline bool float_eq(Float a, Float b)
+inline bool float_eq(real a, real b)
 {
-    Float diff = abs(a-b);
+    real diff = abs(a-b);
     if (diff <= FLOAT_MAX_ABS)
         return true;
 
@@ -57,27 +57,27 @@ inline bool float_eq(Float a, Float b)
     return false;
 }
 
-inline bool float_le(Float a, Float b)
+inline bool float_le(real a, real b)
 {
     return a < b || float_eq(a, b);
 }
 
-inline bool float_ge(Float a, Float b)
+inline bool float_ge(real a, real b)
 {
     return a > b || float_eq(a, b);
 }
 
-inline bool float_eq0(Float a)
+inline bool float_eq0(real a)
 {
     return abs(a) <= FLOAT_MAX_ABS;
 }
 
-inline bool float_ge0(Float a)
+inline bool float_ge0(real a)
 {
     return a > 0 || float_eq0(a);
 }
 
-inline bool float_le0(Float a)
+inline bool float_le0(real a)
 {
     return a < 0 || float_eq0(a);
 }

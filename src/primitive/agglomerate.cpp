@@ -2,15 +2,23 @@
 
 VSRAY_NAMESPACE_BEGIN
 
-void Agglomerate::addPrimitive(const Primitive *p)
+void Agglomerate::addPrimitive(Primitive *p)
 {
-    primitiveSet.push_back(p);
+    items.push_back(p);
 }
 
-bool Agglomerate::intersect(const Ray &ray, Intersection *is, Float epsilon) const
+BBox Agglomerate::getBBox() const
+{
+    BBox box;
+    for (auto p: items)
+        box = box.merge(p->getBBox());
+    return box;
+}
+
+bool Agglomerate::intersect(const Ray &ray, Intersection *is, real epsilon) const
 {
     bool b = false;
-    for (auto p: primitiveSet) {
+    for (auto p: items) {
         if (p->intersect(ray, is, epsilon))
             b = true;
     }

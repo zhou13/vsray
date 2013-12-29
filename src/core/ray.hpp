@@ -8,12 +8,12 @@ class Ray {
 public:
     Point o;
     Vector d;
-    mutable Float maxT;
+    mutable real maxT;
 
     Ray(): maxT(INFINITY) { }
-    Ray(const Point &o, const Vector &d, Float maxT = INFINITY) :
+    Ray(const Point &o, const Vector &d, real maxT = INFINITY) :
         o(o), d(d), maxT(maxT) { }
-    Point operator ()(Float t) {
+    Point operator ()(real t) {
         return o + t * d;
     }
     string toString() {

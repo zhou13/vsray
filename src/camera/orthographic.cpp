@@ -8,8 +8,8 @@ OrthoCamera::OrthoCamera(
         const Point &from,
         const Vector &to,
         const Vector &up,
-        Float width,
-        Float height):
+        real width,
+        real height):
     Camera(from, to, up), width(width), height(height)
 {
     // pass
@@ -17,8 +17,8 @@ OrthoCamera::OrthoCamera(
 
 void OrthoCamera::genRay(const Sample &sample, Ray *ray)
 {
-    Float x = (sample.imageX - 0.5f) * width;
-    Float y = (sample.imageY - 0.5f) * height;
+    real x = (sample.imageX - 0.5f) * width;
+    real y = (sample.imageY - 0.5f) * height;
 
     ray->o = cameraToWorld(Point(x, y, 0));
     ray->d = cameraToWorld(Vector(0, 0, 1));

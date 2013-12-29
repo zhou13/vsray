@@ -1,5 +1,4 @@
-#include "core/mesh.hpp"
-
+#include "shape/mesh.hpp"
 #include "core/ray.hpp"
 #include "core/intersection.hpp"
 
@@ -39,7 +38,7 @@ BBox Mesh::getBBox() const
 }
 
 // if is == null, it is the shading ray
-bool Mesh::intersect(const Ray &ray, Intersection *is, Float epsilon) const
+bool Mesh::intersect(const Ray &ray, Intersection *is, real epsilon) const
 {
     // If we are calculating the shading ray and the current ray comming into a
     // surface, we ignore it
@@ -52,18 +51,18 @@ bool Mesh::intersect(const Ray &ray, Intersection *is, Float epsilon) const
     Vector s1 = ray.d.cross(e2);
     Vector s2 = s.cross(e1);
 
-    Float deno = s1.dot(e1);
+    real deno = s1.dot(e1);
     if (deno == 0)
         return false;
     deno = 1.f / deno;
 
-    Float u = s1.dot(s) * deno;
+    real u = s1.dot(s) * deno;
     if (u < -FLOAT_RELATIVE)
         return false;
-    Float v = s2.dot(ray.d) * deno;
+    real v = s2.dot(ray.d) * deno;
     if (v < -FLOAT_RELATIVE || u + v > 1 + FLOAT_RELATIVE)
         return false;
-    Float t = s2.dot(e2) * deno;
+    real t = s2.dot(e2) * deno;
     if (t < epsilon || t > ray.maxT)
         return false;
 
@@ -75,7 +74,7 @@ bool Mesh::intersect(const Ray &ray, Intersection *is, Float epsilon) const
         is->t = t;
         is->epsilon = t * 5e-4f;
         is->ray = &ray;
-        is->mesh = this;
+        is->shape = this;
     }
     return true;
 }
@@ -87,26 +86,26 @@ void Mesh::fillIntersection(Intersection *is) const
     is->sn = uvToNormal(is->u, is->v);
 }
 
-Point Mesh::uvToPoint(Float u, Float v) const
+Point Mesh::uvToPoint(real u, real v) const
 {
-    Float w = 1 - u - v;
+    real w = 1 - u - v;
     return Point(Vector(a) * u + Vector(b) * v + Vector(c) * w);
 }
 
-Normal Mesh::uvToNormal(Float u, Float v) const
+Normal Mesh::uvToNormal(real u, real v) const
 {
     if (!nn)
         return n;
-    Float w = 1 - u - v;
+    real w = 1 - u - v;
     return (Normal(na) * u + Normal(nb) * v + Normal(nc) * w).normalize();
 }
 
-Float Mesh::getArea() const
+real Mesh::getArea() const
 {
-    Float ab = a.distance(b);
-    Float bc = b.distance(c);
-    Float ca = c.distance(a);
-    Float pp = (ab + bc + ca) / 2.f;
+    real ab = a.distance(b);
+    real bc = b.distance(c);
+    real ca = c.distance(a);
+    real pp = (ab + bc + ca) / 2.f;
     return sqrt(pp * (pp - ab) * (pp - bc) * (pp - ca));
 }
 

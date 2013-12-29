@@ -8,22 +8,22 @@ Random::Random() : gen(rd())
     // pass
 }
 
-Float Random::nextRandomFloat()
+real Random::nextRandomreal()
 {
-    std::uniform_real_distribution<Float> dis(0.f, 1.f);
-    return (Float)dis(gen);
+    std::uniform_real_distribution<real> dis(0.f, 1.f);
+    return (real)dis(gen);
 }
 
-Float Random::nextRandomFloat(Float high)
+real Random::nextRandomreal(real high)
 {
-    std::uniform_real_distribution<Float> dis(0.f, high);
-    return (Float)dis(gen);
+    std::uniform_real_distribution<real> dis(0.f, high);
+    return (real)dis(gen);
 }
 
-Float Random::nextRandomFloat(Float low, Float high)
+real Random::nextRandomreal(real low, real high)
 {
-    std::uniform_real_distribution<Float> dis(low, high);
-    return (Float)dis(gen);
+    std::uniform_real_distribution<real> dis(low, high);
+    return (real)dis(gen);
 }
 
 int Random::nextRandomInt(int high)

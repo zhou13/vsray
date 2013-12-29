@@ -33,13 +33,13 @@ private:
     int numSamples;
     int numSamplesLeft;
 
-    Float *imageX, *imageY;
-    Float *lensU, *lensV;
+    real *imageX, *imageY;
+    real *lensU, *lensV;
 
     bool initialized;
 
-    Float offset();
-    void genStratified1D(Float **f, int n);
+    real offset();
+    void genStratified1D(real **f, int n);
 };
 
 VSRAY_NAMESPACE_END

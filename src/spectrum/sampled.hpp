@@ -7,22 +7,22 @@ VSRAY_NAMESPACE_BEGIN
 template<int n>
 class SampledSpectrum {
 protected:
-    Float v[n];
+    real v[n];
 
 public:
     SampledSpectrum() {
         std::fill_n(v, n, 0.f);
     }
 
-    SampledSpectrum(Float f) {
+    SampledSpectrum(real f) {
         std::fill_n(v, n, f);
     }
 
-    SampledSpectrum(Float f[]) {
+    SampledSpectrum(real f[]) {
         std::copy_n(f, n, v);
     }
 
-    Float &operator[] (int index) {
+    real &operator[] (int index) {
         assert(0 <= index && index < n);
         return v[index];
     }
@@ -66,14 +66,14 @@ public:
         return *this;
     }
 
-    SampledSpectrum operator* (const Float rhs) {
+    SampledSpectrum operator* (const real rhs) {
         SampledSpectrum r(v);
         for (int i = 0; i < n; ++i)
             r[i] *= rhs;
         return r;
     }
 
-    SampledSpectrum operator/ (const Float rhs) {
+    SampledSpectrum operator/ (const real rhs) {
         assert(rhs != 0);
 
         SampledSpectrum r(v);
@@ -82,7 +82,7 @@ public:
         return r;
     }
 
-    friend SampledSpectrum operator* (const Float f, const SampledSpectrum &s) {
+    friend SampledSpectrum operator* (const real f, const SampledSpectrum &s) {
         SampledSpectrum r(s.v);
         for (int i = 0; i < n; ++i)
             r[i] *= f;

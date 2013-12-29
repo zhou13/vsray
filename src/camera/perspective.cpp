@@ -10,11 +10,11 @@ PerspCamera::PerspCamera(
         const Point &from,
         const Vector &to,
         const Vector &up,
-        Float width,
-        Float height,
-        Float depth,
-        Float lensRadius,
-        Float focalDistance):
+        real width,
+        real height,
+        real depth,
+        real lensRadius,
+        real focalDistance):
     Camera(from, to, up),
     width(width), height(height), depth(depth),
     lensRadius(lensRadius), focalDistance(focalDistance)
@@ -24,8 +24,8 @@ PerspCamera::PerspCamera(
 
 void PerspCamera::genRay(const Sample &sample, Ray *ray)
 {
-    Float x = (sample.imageX - 0.5f) * width;
-    Float y = (sample.imageY - 0.5f) * height;
+    real x = (sample.imageX - 0.5f) * width;
+    real y = (sample.imageY - 0.5f) * height;
 
     ray->o = Point(0, 0, 0);
     ray->d = Vector(x, y, depth);

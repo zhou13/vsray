@@ -2,16 +2,16 @@
 
 VSRAY_NAMESPACE_BEGIN
 
-TriangleFilter::TriangleFilter(Float size): Filter(size)
+TriangleFilter::TriangleFilter(real size): Filter(size)
 {
     // pass
 }
 
-Float TriangleFilter::operator()(Float dx, Float dy)
+real TriangleFilter::operator()(real dx, real dy)
 {
     dx = abs(dx);
     dy = abs(dy);
-    return std::max(Float(0), size - dx) * std::max(Float(0), size - dy);
+    return std::max(real(0), size - dx) * std::max(real(0), size - dy);
 }
 
 VSRAY_NAMESPACE_END

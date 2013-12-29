@@ -23,12 +23,12 @@ void Scene::addLight(Light *light)
     lights.push_back(light);
 }
 
-Light* Scene::sampleLight(Float number)
+Light* Scene::sampleLight(real number)
 {
-    return lights[int(Float(lights.size()) * number)];
+    return lights[int(real(lights.size()) * number)];
 }
 
-bool Scene::intersect(const Ray &ray, Intersection *is, Float epsilon) const
+bool Scene::intersect(const Ray &ray, Intersection *is, real epsilon) const
 {
     return primitive->intersect(ray, is, epsilon);
 }

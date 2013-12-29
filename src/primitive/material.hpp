@@ -12,7 +12,8 @@ class Material;
 class MaterialPrimitive : public Primitive{
 public:
     MaterialPrimitive(const Primitive *primitive, Material *material);
-    virtual bool intersect(const Ray &ray, Intersection *is, Float epsilon) const;
+    virtual BBox getBBox() const;
+    virtual bool intersect(const Ray &ray, Intersection *is, real epsilon) const;
 
 private:
     const Primitive *primitive;

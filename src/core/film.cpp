@@ -22,7 +22,7 @@ Film::~Film()
     delete filter;
 }
 
-Float Film::clamp(Float v, Float min, Float max)
+real Film::clamp(real v, real min, real max)
 {
     if (v > max)
         return max;
@@ -37,17 +37,17 @@ void Film::addSample(const Sample &sample, Spectrum sp)
 {
     std::unique_lock<std::mutex> lock(filmMutex);
 
-    Float x = (Float)width  * sample.imageX;
-    Float y = (Float)height * sample.imageY;
+    real x = (real)width  * sample.imageX;
+    real y = (real)height * sample.imageY;
 
     int i0 = (int)std::max(ceil(y-dy), 0.f);
     int j0 = (int)std::max(ceil(x-dx), 0.f);
-    int i1 = (int)std::min(floor(y+dy), (Float)height - 0.5f);
-    int j1 = (int)std::min(floor(x+dx), (Float)width - 0.5f);
+    int i1 = (int)std::min(floor(y+dy), (real)height - 0.5f);
+    int j1 = (int)std::min(floor(x+dx), (real)width - 0.5f);
 
     for (int i = i0; i <= i1; ++i)
         for (int j = j0; j <= j1; ++j) {
-            Float weight = (*filter)(Float(j) - x, Float(i) - y);
+            real weight = (*filter)(real(j) - x, real(i) - y);
             image[i * width + j].color += sp * weight;
             image[i * width + j].weight += weight;
         }
@@ -65,7 +65,7 @@ void Film::saveToDisk()
     for (int i = 0; i < height; ++i)
         for (int j = 0; j < width; ++j) {
             int k = i * width + j;
-            Float rgb[3];
+            real rgb[3];
 
             if (image[k].weight == 0.f) {
                 rgb[0] = rgb[1] = rgb[2] = 0.f;

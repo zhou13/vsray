@@ -1,6 +1,7 @@
 #include "core/render.hpp"
 #include "core/sample.hpp"
 #include "core/camera.hpp"
+#include "core/ray.hpp"
 
 #include <thread>
 
@@ -87,7 +88,7 @@ Spectrum Render::raytrace(Sample &sample, const Ray& ray)
 {
     Intersection is;
     if (scene->primitive->intersect(ray, &is, 0.f)) {
-        is.mesh->fillIntersection(&is);
+        is.fillIntersection();
         assert(is.bsdf);
         Spectrum r = si->radiance(sample, is);
         return r;

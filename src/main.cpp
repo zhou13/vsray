@@ -7,7 +7,6 @@
 #include "core/render.hpp"
 #include "core/sample.hpp"
 #include "core/scene.hpp"
-#include "core/meshset.hpp"
 #include "core/spectrum.hpp"
 #include "core/transform.hpp"
 #include "core/vsray.hpp"
@@ -15,11 +14,13 @@
 #include "filter/triangle.hpp"
 #include "integrator/direct.hpp"
 #include "light/area.hpp"
+#include "light/point.hpp"
 #include "material/stupid.hpp"
-#include "primitive/adapter.hpp"
-#include "primitive/material.hpp"
 #include "primitive/agglomerate.hpp"
+#include "primitive/material.hpp"
 #include "sampler/stratified.hpp"
+#include "shape/mesh.hpp"
+#include "shape/meshset.hpp"
 #include "shape/polygon.hpp"
 #include "shape/uvsphere.hpp"
 
@@ -99,13 +100,11 @@ int main()
     vec.push_back(Point(-20, +20, 0));
 
     Polygon poly(vec, &pool);
-    UVSphere sphere(Point(0, 0, 8), 5, 8, 40, true, &pool);
+    UVSphere uvsphere(Point(0, 0, 8), 5, 8, 40, true, &pool);
 
-    AdapterPrimitive adpt1(&poly);
-    AdapterPrimitive adpt2(&sphere);
     StupidMaterial smat;
-    MaterialPrimitive matpt1(&adpt1, &smat);
-    MaterialPrimitive matpt2(&adpt2, &smat);
+    MaterialPrimitive matpt1(&poly, &smat);
+    MaterialPrimitive matpt2(&uvsphere, &smat);
 
     Agglomerate agg;
     agg.addPrimitive(&matpt1);
@@ -121,8 +120,9 @@ int main()
     Polygon poly2(vec2, &pool);
 
     AreaLight areaLight(&poly2, Spectrum(50.f));
+    PointLight pointLight(Point(0, 0, 20), 80);
 
-    scene.addLight(&areaLight);
+    scene.addLight(&pointLight);
 
     DirectIntegrator di(&scene, false);
     Render render(&scene, &film2, &sampler2, &di, 100);

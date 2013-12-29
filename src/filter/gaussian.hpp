@@ -7,12 +7,12 @@ VSRAY_NAMESPACE_BEGIN
 
 class GaussianFilter : public Filter {
 public:
-    GaussianFilter(Float size = 1.f, Float alpha = 2.f);
-    virtual Float operator()(Float dx, Float dy);
+    GaussianFilter(real size = 1.f, real alpha = 2.f);
+    virtual real operator()(real dx, real dy);
 
 private:
-    Float alpha;
-    Float e2;
+    real alpha;
+    real e2;
 };
 
 VSRAY_NAMESPACE_END

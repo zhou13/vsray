@@ -7,8 +7,8 @@ VSRAY_NAMESPACE_BEGIN
 
 class TriangleFilter : public Filter {
 public:
-    TriangleFilter(Float size = 1.f);
-    virtual Float operator()(Float dx, Float dy);
+    TriangleFilter(real size = 1.f);
+    virtual real operator()(real dx, real dy);
 };
 
 VSRAY_NAMESPACE_END

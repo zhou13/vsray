@@ -7,9 +7,9 @@ VSRAY_NAMESPACE_BEGIN
 class Random {
 public:
     Random();
-    Float nextRandomFloat();
-    Float nextRandomFloat(Float high);
-    Float nextRandomFloat(Float low, Float high);
+    real nextRandomreal();
+    real nextRandomreal(real high);
+    real nextRandomreal(real low, real high);
     int nextRandomInt(int high);
     int nextRandomInt(int low, int high);
 

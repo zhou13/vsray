@@ -65,7 +65,7 @@ public:
                             const Vector &to,
                             const Vector &up)
     {
-        Float m[4][4];
+        real m[4][4];
         
         m[0][3] = from.x;
         m[1][3] = from.y;
@@ -87,7 +87,7 @@ public:
         m[1][2] = to.y;
         m[2][2] = to.z;
 
-        return Transform(Matrix4x4((Float *)m));
+        return Transform(Matrix4x4((real *)m));
     }
 };
 

@@ -8,8 +8,8 @@ VSRAY_NAMESPACE_BEGIN
 class Matrix4x1 {
 public:
     union {
-        Float m[4];
-        Float v[4];
+        real m[4];
+        real v[4];
     };
     Matrix4x1() {
         m[0] = m[1] = m[2] = m[3] = 0;
@@ -32,7 +32,7 @@ public:
         m[2] = v.z;
         m[3] = 1.f;
     }
-    explicit Matrix4x1(Float *m_) {
+    explicit Matrix4x1(real *m_) {
         m[0] = m_[0];
         m[1] = m_[1];
         m[2] = m_[2];
@@ -52,7 +52,7 @@ public:
     explicit operator Normal() {
         return Normal(m[0], m[1], m[2]);
     }
-    Matrix4x1(Float m0, Float m1, Float m2, Float m3) {
+    Matrix4x1(real m0, real m1, real m2, real m3) {
         m[0] = m0;
         m[1] = m1;
         m[2] = m2;
@@ -76,17 +76,17 @@ public:
             r.m[i] = m[i] - rhs.m[i];
         return r;
     }
-    Matrix4x1 operator *(const Float &rhs) {
+    Matrix4x1 operator *(const real &rhs) {
         Matrix4x1 r;
         for (int i = 0; i < 4; ++i)
             r.m[i] = m[i] * rhs;
         return r;
     }
-    Matrix4x1 operator /(const Float &rhs) {
+    Matrix4x1 operator /(const real &rhs) {
         assert(rhs != 0);
 
         Matrix4x1 r;
-        Float t = 1.f / rhs;
+        real t = 1.f / rhs;
         for (int i = 0; i < 4; ++i)
             r.m[i] = m[i] / t;
         return r;
@@ -96,27 +96,27 @@ public:
 class Matrix4x4 {
 public:
     union {
-        Float v[4][4];
-        Float m[16];
+        real v[4][4];
+        real m[16];
     };
 
     Matrix4x4() {
         memset(v, 0, sizeof(v));
     }
 
-    Matrix4x4(Float diag) {
+    Matrix4x4(real diag) {
         memset(v, 0, sizeof(v));
         v[0][0] = v[1][1] = v[2][2] = v[3][3] = diag;
     }
 
-    Matrix4x4(Float *m_) {
+    Matrix4x4(real *m_) {
         memmove(m, m_, sizeof(m));
     }
 
-    Matrix4x4(Float m0, Float m1, Float m2, Float m3,
-              Float m4, Float m5, Float m6, Float m7,
-              Float m8, Float m9, Float m10, Float m11,
-              Float m12, Float m13, Float m14, Float m15)
+    Matrix4x4(real m0, real m1, real m2, real m3,
+              real m4, real m5, real m6, real m7,
+              real m8, real m9, real m10, real m11,
+              real m12, real m13, real m14, real m15)
     {
         m[0 ] = m0 ; m[1 ] = m1 ; m[2 ] = m2 ; m[3 ] = m3 ;
         m[4 ] = m4 ; m[5 ] = m5 ; m[6 ] = m6 ; m[7 ] = m7 ;
@@ -168,18 +168,18 @@ public:
         return r;
     }
 
-    Matrix4x4 operator *(const Float &rhs) const {
+    Matrix4x4 operator *(const real &rhs) const {
         Matrix4x4 r;
         for (int i = 0; i < 16; ++i)
             r.m[i] = m[i] * rhs;
         return r;
     }
 
-    Matrix4x4 operator /(const Float &rhs) const {
+    Matrix4x4 operator /(const real &rhs) const {
         assert(rhs != 0);
 
         Matrix4x4 r;
-        Float t = 1.f / rhs;
+        real t = 1.f / rhs;
         for (int i = 0; i < 16; ++i)
             r.m[i] = m[i] * t;
         return r;
@@ -193,7 +193,7 @@ public:
         return r;
     }
 
-    Float det() {
+    real det() {
         return (
                 m[3 ]*m[6 ]*m[9 ]*m[12] - m[2 ]*m[7 ]*m[9 ]*m[12] -
                 m[3 ]*m[5 ]*m[10]*m[12] + m[1 ]*m[7 ]*m[10]*m[12] +
@@ -212,7 +212,7 @@ public:
 
     Matrix4x4 inverse() {
         Matrix4x4 r;
-        Float det;
+        real det;
 
         r.m[0] = m[5]  * m[10] * m[15] - 
                  m[5]  * m[11] * m[14] - 

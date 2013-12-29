@@ -1,7 +1,6 @@
 #include "core/bsdf.hpp"
 #include "core/bxdf.hpp"
 #include "core/intersection.hpp"
-#include "core/mesh.hpp"
 #include "core/sample.hpp"
 
 VSRAY_NAMESPACE_BEGIN
@@ -10,7 +9,7 @@ BSDF::BSDF(const Intersection *is) :
     ex(), ey(), ez(is->sn)
 {
     ez = is->sn;
-    ex = (is->mesh->a - is->mesh->b).normalize();
+    ex = is->ta;
     ey = ez.cross(ex);
 }
 
@@ -35,12 +34,12 @@ inline Vector BSDF::surfaceToWorld(const Vector &v) const
     return Vector(ex * v.x + ey * v.y + ez * v.z);
 }
 
-Float BSDF::pdf(const Vector &wo, const Vector &wi) const
+real BSDF::pdf(const Vector &wo, const Vector &wi) const
 {
-    Float p = 0.f;
+    real p = 0.f;
     for (auto b: bxdfs)
         p += b->pdf(wo, wi);
-    return p / (Float)bxdfs.size();
+    return p / (real)bxdfs.size();
 }
 
 Spectrum BSDF::f(const Vector &wo_, const Vector &wi_) const
@@ -58,12 +57,12 @@ Spectrum BSDF::sampleF(
         const Vector &wo_,
         Vector *wi,
         Sample &sample,
-        Float *pdf) const
+        real *pdf) const
 {
     Vector wo = worldToSurface(wo_);
 
     int idx = sample.idxBSDF;
-    int k = int(sample.bxdfI[idx] * (Float)bxdfs.size());
+    int k = int(sample.bxdfI[idx] * (real)bxdfs.size());
     bxdfs[k]->sampleF(wo, wi, sample.bxdfU[idx], sample.bxdfV[idx], nullptr);
 
     Spectrum f;
@@ -72,7 +71,7 @@ Spectrum BSDF::sampleF(
         f += b->f(wo, *wi);
         *pdf += b->pdf(wo, *wi);
     }
-    *pdf /= (Float)bxdfs.size();
+    *pdf /= (real)bxdfs.size();
     return f;
 }
 

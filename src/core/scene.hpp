@@ -19,8 +19,8 @@ public:
     Scene(Primitive *primitive, Camera *camera, const vector<Light *> &lights);
 
     void addLight(Light *lights);
-    Light* sampleLight(Float number);
-    bool intersect(const Ray &ray, Intersection *is, Float epsilon) const;
+    Light* sampleLight(real number);
+    bool intersect(const Ray &ray, Intersection *is, real epsilon) const;
 };
 
 VSRAY_NAMESPACE_END

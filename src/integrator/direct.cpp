@@ -3,6 +3,7 @@
 #include "core/intersection.hpp"
 #include "core/light.hpp"
 #include "core/mcmc.hpp"
+#include "core/ray.hpp"
 #include "core/render.hpp"
 #include "core/sample.hpp"
 #include "core/scene.hpp"
@@ -32,7 +33,7 @@ Spectrum DirectIntegrator::radiance(Sample &sample, Intersection &is)
                     scene->sampleLight(sample.lightI[i]),
                     sample, is);
         }
-        r *= (Float)scene->lights.size() / (Float)sample.nLight;
+        r *= (real)scene->lights.size() / (real)sample.nLight;
     } else {
         for (Light *light: scene->lights) {
             for (int i = 0; i < sample.nLight; ++i) {
@@ -41,7 +42,7 @@ Spectrum DirectIntegrator::radiance(Sample &sample, Intersection &is)
                 r += directIllumination(light, sample, is);
             }
         }
-        r /= (Float)sample.nLight;
+        r /= (real)sample.nLight;
     }
     return r;
 }
@@ -50,10 +51,12 @@ Spectrum DirectIntegrator::directIllumination(
         Light *light, Sample &sample, Intersection &is)
 {
     Vector wi;
-    Float lightPdf, bsdfPdf, maxT;
+    real lightPdf, bsdfPdf, maxT;
     Spectrum ret(0.f);
 
-    Spectrum l = light->sampleL(is.p, &wi, &maxT, sample, &lightPdf);
+    UNUSED(bsdfPdf);
+
+    Spectrum li = light->sampleL(is.p, &wi, &maxT, sample, &lightPdf);
     if (lightPdf == 0)
         return ret;
 
@@ -63,15 +66,16 @@ Spectrum DirectIntegrator::directIllumination(
         return ret;
 
     assert(is.bsdf);
-    if (light->isPointLight()) {
+    Vector wo = -is.ray->d.normalize();
+    Spectrum f = is.bsdf->f(wo, wi);
+
+    if (light->isDelta()) {
+        ret += f * li * abs(wo.dot(is.sn)) * lightPdf;
     } else {
-        Vector wo = -is.ray->d.normalize();
-        Spectrum f = is.bsdf->f(wo, wi);
-        // fPdf = is.bsdf->pdf(wo, wi);
-        // XXX  Can we change 1 to some high number?
-        ret += f * l * abs(wo.dot(is.sn)) * misPowerHeuristic(1, lightPdf, 0, 0.f) / lightPdf;
+        // bsdfPdf = is.bsdf->pdf(wo, wi);
+        real weight = misPowerHeuristic(1, lightPdf, 0, 0.f);
+        ret += f * li * abs(wo.dot(is.sn)) * weight / lightPdf;
     }
-    UNUSED(bsdfPdf);
 
     return ret;
     // TODO add BSDF sample: for reflectance

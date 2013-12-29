@@ -1,5 +1,5 @@
 #include "shape/polygon.hpp"
-#include "core/mesh.hpp"
+#include "shape/mesh.hpp"
 
 VSRAY_NAMESPACE_BEGIN
 

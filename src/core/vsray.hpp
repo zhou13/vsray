@@ -26,16 +26,16 @@
 
 namespace vsray {
 #ifdef DOUBLE_PRECISION
-    typedef double Float;
+    typedef double real;
     typedef uint64_t intflt_t;
     const float FLOAT_RELATIVE = 5e-8f;
 #else
-    typedef float Float;
+    typedef float real;
     typedef uint32_t intflt_t;
     const float FLOAT_RELATIVE = 5e-5f;
 #endif
-    const Float PI = Float(3.141592653589793238462);
-    const Float INV_PI = 1.f / PI;
+    const real PI = real(3.141592653589793238462);
+    const real INV_PI = 1.f / PI;
 }
 
 #include <boost/lexical_cast.hpp>
@@ -53,6 +53,7 @@ namespace vsray {
     using std::sqrt;
     using std::exp;
     using std::log;
+    using std::log2;
     using std::ceil;
     using std::floor;
 

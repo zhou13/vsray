@@ -12,10 +12,10 @@ class Intersection;
 
 class Meshset : public Primitive {
 public:
-    Mesh *operator[](int index);
+    Mesh *operator[](int index) const;
     size_t size() const;
     void addMesh(Mesh *m);
-    virtual bool intersect(const Ray &ray, Intersection *is, Float epsilon) const;
+    virtual bool intersect(const Ray &ray, Intersection *is, real epsilon) const;
     virtual BBox getBBox() const;
 
 private:

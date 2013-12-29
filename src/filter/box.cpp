@@ -2,12 +2,12 @@
 
 VSRAY_NAMESPACE_BEGIN
 
-BoxFilter::BoxFilter(Float size): Filter(size)
+BoxFilter::BoxFilter(real size): Filter(size)
 {
     // pass
 }
 
-Float BoxFilter::operator()(Float, Float)
+real BoxFilter::operator()(real, real)
 {
     return 1.f;
 }
