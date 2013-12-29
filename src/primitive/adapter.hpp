@@ -11,7 +11,7 @@ class Intersection;
 class AdapterPrimitive : public Primitive {
 public:
     AdapterPrimitive(const Shape *shape);
-    virtual bool intersect(const Ray &ray, Intersection *is) const;
+    virtual bool intersect(const Ray &ray, Intersection *is, Float epsilon) const;
 
 private:
     const Shape *shape;

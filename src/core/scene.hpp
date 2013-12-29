@@ -20,7 +20,7 @@ public:
 
     void addLight(Light *lights);
     Light* sampleLight(Float number);
-    bool intersect(const Ray &ray, Intersection *is) const;
+    bool intersect(const Ray &ray, Intersection *is, Float epsilon) const;
 };
 
 VSRAY_NAMESPACE_END

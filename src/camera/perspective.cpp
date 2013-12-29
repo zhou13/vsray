@@ -33,7 +33,7 @@ void PerspCamera::genRay(const Sample &sample, Ray *ray)
     modifyRayDOF(sample, ray);
 
     ray->o = cameraToWorld(ray->o);
-    ray->d = cameraToWorld(ray->d);
+    ray->d = cameraToWorld(ray->d).normalize();
 }
 
 void PerspCamera::modifyRayDOF(const Sample &sample, Ray *ray)
@@ -45,7 +45,7 @@ void PerspCamera::modifyRayDOF(const Sample &sample, Ray *ray)
         uniformDisk(sample.lensU, sample.lensV, &v.x, &v.y);
 
         ray->o += v;
-        ray->d = p - ray->o;
+        ray->d = (p - ray->o).normalize();
     }
 }
 

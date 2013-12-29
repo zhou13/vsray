@@ -1,13 +1,74 @@
 #include "shape/uvsphere.hpp"
+#include "core/mcmc.hpp"
 
 VSRAY_NAMESPACE_BEGIN
 
-/*
-UVSphere::UVSphere(const Point &center, Float radius, int countU, int countV)
+UVSphere::UVSphere(
+        const Point &center,
+        Float radius,
+        int cntU,
+        int cntV,
+        bool inter,
+        object_pool<Mesh> *pool)
 {
-    vector<vector<Vector>> ps(countV);
-    // for (int i = 0; i < countU
+    assert(cntU > 2);
+    assert(cntV > 2);
+
+
+    vector<vector<Vector>> ps(cntU);
+
+    Float invCntU = 1.f / Float(cntU);
+    Float invCntV = 1.f / Float(cntV);
+    for (int i = 0; i < cntU; ++i) {
+        for (int j = 0; j < cntV; ++j) {
+            Vector dir;
+            uniformSphere(invCntU * Float(i), invCntV * Float(j), &dir);
+            ps[i].push_back(radius * dir);
+        }
+        ps[i].push_back(ps[i][0]);
+    }
+
+    for (int i = 0; i < cntU-1; ++i) {
+        for (int j = 0; j < cntV; ++j) {
+            Mesh *m1, *m2;
+            if (!inter) {
+                if (i > 0) {
+                    m1 = pool->construct(
+                            center + ps[i][j],
+                            center + ps[i+1][j],
+                            center + ps[i][j+1]
+                    );
+                }
+                m2 = pool->construct(
+                        center + ps[i+1][j+1],
+                        center + ps[i][j+1],
+                        center + ps[i+1][j]
+                );
+            } else {
+                if (i > 0) {
+                    m1 = pool->construct(
+                            std::make_tuple(center + ps[i][j],
+                                            center + ps[i+1][j],
+                                            center + ps[i][j+1]),
+                            std::make_tuple(Normal(ps[i][j]),
+                                            Normal(ps[i+1][j]),
+                                            Normal(ps[i][j+1]))
+                    );
+                }
+                m2 = pool->construct(
+                        std::make_tuple(center + ps[i+1][j+1],
+                                        center + ps[i][j+1],
+                                        center + ps[i+1][j]),
+                        std::make_tuple(Normal(ps[i+1][j+1]),
+                                        Normal(ps[i][j+1]),
+                                        Normal(ps[i+1][j]))
+                );
+            }
+            if (i > 0)
+                addMesh(m1);
+            addMesh(m2);
+        }
+    }
 }
-*/
 
 VSRAY_NAMESPACE_END

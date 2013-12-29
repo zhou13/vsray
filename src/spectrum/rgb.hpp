@@ -92,9 +92,10 @@ public:
     RGBSpectrum operator/(const Float rhs) {
         assert(rhs != 0);
 
+        Float inv = 1.f / rhs;
         RGBSpectrum r(v);
         for (int i = 0; i < 3; ++i)
-            r[i] /= rhs;
+            r[i] *= inv;
         return r;
     }
 
@@ -118,8 +119,10 @@ public:
 
     RGBSpectrum &operator/=(const Float rhs) {
         assert(rhs != 0);
+
+        Float inv = 1.f / rhs;
         for (int i = 0; i < 3; ++i)
-            v[i] /= rhs;
+            v[i] *= inv;
         return *this;
     }
 

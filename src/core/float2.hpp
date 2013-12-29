@@ -4,7 +4,7 @@
 
 VSRAY_NAMESPACE_BEGIN
 
-const float   FLT_MAX_ABS = 5e-6f;
+const float   FLT_MAX_ABS = 5e-5f;
 const int32_t FLT_MAX_ULP = 20;
 const double  DBL_MAX_ABS = 1e-10;
 const int32_t DBL_MAX_ULP = 40;

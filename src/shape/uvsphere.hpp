@@ -1,12 +1,19 @@
 #pragma once
 
-#include "core/shape.hpp"
+#include "core/meshset.hpp"
 
 VSRAY_NAMESPACE_BEGIN
 
-class UVSphere : public Shape {
+class UVSphere : public Meshset {
 public:
-    //UVSphere(const Point &center, Float radius, int countU, int countV);
+    UVSphere(
+            const Point &center,
+            Float radius,
+            int cntU,
+            int cntV,
+            bool inter,
+            object_pool<Mesh> *pool
+    );
 };
 
 VSRAY_NAMESPACE_END

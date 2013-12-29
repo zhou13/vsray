@@ -9,8 +9,8 @@
 
 VSRAY_NAMESPACE_BEGIN
 
-Film::Film(int width, int height, Filter *filter) :
-    width(width), height(height), filter(filter)
+Film::Film(int width, int height, Filter *filter, string filename) :
+    width(width), height(height), filter(filter), filename(filename)
 {
     image = new Pixel[width * height];
     dx = dy = filter->size;
@@ -53,7 +53,7 @@ void Film::addSample(const Sample &sample, Spectrum sp)
         }
 }
 
-void Film::saveToDisk(string filename)
+void Film::saveToDisk()
 {
     std::unique_lock<std::mutex> lock(filmMutex);
 

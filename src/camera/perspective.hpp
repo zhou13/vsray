@@ -5,7 +5,7 @@
 
 VSRAY_NAMESPACE_BEGIN
 
-class PerspCamera : Camera {
+class PerspCamera : public Camera {
 public:
     PerspCamera(
             const Point &from,

@@ -10,9 +10,9 @@ MaterialPrimitive::MaterialPrimitive(const Primitive *primitive, Material *mater
     // pass
 }
 
-bool MaterialPrimitive::intersect(const Ray &ray, Intersection *is) const
+bool MaterialPrimitive::intersect(const Ray &ray, Intersection *is, Float epsilon) const
 {
-    if (primitive->intersect(ray, is)) {
+    if (primitive->intersect(ray, is, epsilon)) {
         if (is)
             is->bsdf = material->getBSDF(is);
         return true;

@@ -51,27 +51,29 @@ Spectrum DirectIntegrator::directIllumination(
 {
     Vector wi;
     Float lightPdf, bsdfPdf, maxT;
+    Spectrum ret(0.f);
 
     Spectrum l = light->sampleL(is.p, &wi, &maxT, sample, &lightPdf);
+    if (lightPdf == 0)
+        return ret;
+
     Ray ray(is.p, wi, maxT);
+    // shadow ray
+    if (scene->intersect(ray, nullptr, is.epsilon))
+        return ret;
 
-    if (scene->intersect(ray, nullptr))
-        return Spectrum(0.f);
-
+    assert(is.bsdf);
     if (light->isPointLight()) {
-        // TODO
     } else {
-        assert(is.bsdf);
         Vector wo = -is.ray->d.normalize();
         Spectrum f = is.bsdf->f(wo, wi);
         // fPdf = is.bsdf->pdf(wo, wi);
         // XXX  Can we change 1 to some high number?
-        return f * l * abs(wo.dot(is.sn)) * misPowerHeuristic(1, lightPdf, 0, 0.f) / lightPdf;
+        ret += f * l * abs(wo.dot(is.sn)) * misPowerHeuristic(1, lightPdf, 0, 0.f) / lightPdf;
     }
     UNUSED(bsdfPdf);
 
-    assert(false);
-    return Spectrum(0.f);
+    return ret;
     // TODO add BSDF sample: for reflectance
 }
 

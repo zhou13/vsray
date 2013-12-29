@@ -7,11 +7,11 @@ void Agglomerate::addPrimitive(const Primitive *p)
     primitiveSet.push_back(p);
 }
 
-bool Agglomerate::intersect(const Ray &ray, Intersection *is) const
+bool Agglomerate::intersect(const Ray &ray, Intersection *is, Float epsilon) const
 {
     bool b = false;
     for (auto p: primitiveSet) {
-        if (p->intersect(ray, is))
+        if (p->intersect(ray, is, epsilon))
             b = true;
     }
     return b;

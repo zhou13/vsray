@@ -8,10 +8,10 @@ class Ray;
 class Shape;
 class Intersection;
 
-class Agglomerate {
+class Agglomerate : public Primitive {
 public:
     void addPrimitive(const Primitive *p);
-    virtual bool intersect(const Ray &ray, Intersection *is) const;
+    virtual bool intersect(const Ray &ray, Intersection *is, Float epilson) const;
 
 private:
     vector<const Primitive *> primitiveSet;

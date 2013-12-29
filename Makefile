@@ -12,7 +12,7 @@ DEFINES = -D__DEBUG_BUILD
 
 
 CXXFLAGS += -fsanitize=address
-CXXFLAGS += -O2 -pg
+CXXFLAGS += -O1 -g
 CXXFLAGS += -std=c++11
 CXXFLAGS += -Wall -Wextra -Wconversion #-Wno-unused-private-field
 CXXFLAGS += $(INCLUDE_DIR)

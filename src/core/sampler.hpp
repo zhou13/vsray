@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/vsray.hpp"
+#include "core/random.hpp"
 
 VSRAY_NAMESPACE_BEGIN
 
@@ -18,6 +19,9 @@ public:
     virtual int roundSize(int size) = 0;
 
     int nLight, nBSDF;
+
+protected:
+    Random random;
 };
 
 VSRAY_NAMESPACE_END

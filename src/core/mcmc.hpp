@@ -20,6 +20,13 @@ inline void uniformHemisphere(Float u, Float v, Vector *vec)
     vec->z = u;
 }
 
+inline void uniformSphere(Float u, Float v, Vector *vec)
+{
+    vec->x = cos(2.f * PI * v) * 2 * sqrt(u - u * u);
+    vec->y = sin(2.f * PI * v) * 2 * sqrt(u - u * u);
+    vec->z = 1 - 2 * u;
+}
+
 inline void uniformTriangle(Float u, Float v, Float *uu, Float *vv)
 {
     Float su = sqrt(u);

@@ -1,6 +1,6 @@
 #include "core/bsdf.hpp"
-#include "core/intersection.hpp"
 #include "core/bxdf.hpp"
+#include "core/intersection.hpp"
 #include "core/mesh.hpp"
 #include "core/sample.hpp"
 

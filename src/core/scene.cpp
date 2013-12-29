@@ -28,9 +28,9 @@ Light* Scene::sampleLight(Float number)
     return lights[int(Float(lights.size()) * number)];
 }
 
-bool Scene::intersect(const Ray &ray, Intersection *is) const
+bool Scene::intersect(const Ray &ray, Intersection *is, Float epsilon) const
 {
-    return primitive->intersect(ray, is);
+    return primitive->intersect(ray, is, epsilon);
 }
 
 VSRAY_NAMESPACE_END

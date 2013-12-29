@@ -1,3 +1,5 @@
+#pragma once
+
 #include "core/vsray.hpp"
 #include "core/film.hpp"
 #include "core/scene.hpp"
@@ -10,7 +12,11 @@ VSRAY_NAMESPACE_BEGIN
 
 class Render {
 public:
-    Render(Scene *scene, Film *film, Sampler *sampler, SurfaceIntegrator *si);
+    Render(Scene *scene,
+           Film *film,
+           Sampler *sampler,
+           SurfaceIntegrator *si,
+           uint32_t maxThread);
 
     void run();
     void subtaskRun();
@@ -22,6 +28,7 @@ private:
     Sampler *sampler;
     SurfaceIntegrator *si;
     int width, height;
+    uint32_t maxThread;
 
     vector<std::pair<int, int>> patchQueue;
     std::atomic_int globalIndex;

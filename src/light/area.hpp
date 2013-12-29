@@ -5,20 +5,20 @@
 
 VSRAY_NAMESPACE_BEGIN
 
-class Shape;
 class Sample;
 class Point;
 class Vector;
+class Meshset;
 
 class AreaLight : public Light {
 public:
-    AreaLight(const Shape *shape, Spectrum emit);
+    AreaLight(const Meshset *shape, Spectrum emit);
     virtual Spectrum sampleL(
             const Point &obj, Vector *wi, Float *len, Sample &sample, Float *pdf);
     virtual bool isPointLight();
 
 private:
-    const Shape *shape;
+    const Meshset *shape;
     Spectrum emit;
 };
 

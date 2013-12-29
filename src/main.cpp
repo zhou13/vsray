@@ -7,18 +7,21 @@
 #include "core/render.hpp"
 #include "core/sample.hpp"
 #include "core/scene.hpp"
-#include "core/shape.hpp"
+#include "core/meshset.hpp"
 #include "core/spectrum.hpp"
 #include "core/transform.hpp"
 #include "core/vsray.hpp"
 #include "filter/gaussian.hpp"
+#include "filter/triangle.hpp"
 #include "integrator/direct.hpp"
 #include "light/area.hpp"
 #include "material/stupid.hpp"
 #include "primitive/adapter.hpp"
 #include "primitive/material.hpp"
+#include "primitive/agglomerate.hpp"
 #include "sampler/stratified.hpp"
 #include "shape/polygon.hpp"
+#include "shape/uvsphere.hpp"
 
 #include <iostream>
 
@@ -51,8 +54,8 @@ int main()
     Ray ray2(Point(0, 0, 0), Vector(-10, 0, 0));
     Mesh mesh(Point(10, 5, 0), Point(10, -5, -5), Point(10, -6, 7));
     Intersection is;
-    assert(!mesh.intersect(ray2, &is));
-    assert(mesh.intersect(ray, &is));
+    assert(!mesh.intersect(ray2, &is, 0.f));
+    assert(mesh.intersect(ray, &is, 0.f));
     printf("[u v t]: %.5f %.5f %.5f\n", is.u, is.v, is.t);
     pobj(mesh.uvToPoint(is.u, is.v));
     pobj(ray(is.t));
@@ -84,39 +87,47 @@ int main()
     // pdash();
     // pdash();
 
-    OrthoCamera oca2(Point(0, 0, 10), Vector(0, 0, -1), Vector(0, 1, 0), 15, 15);
-    StratifiedSampler sampler2(800, 800, 1, 4, 0, false);
-    Film film2(800, 800, new GaussianFilter(1));
+    PerspCamera oca2(Point(0, 0, 1000), Vector(0, 0, -1), Vector(0, 1, 0), 20, 20, 1000);
+    StratifiedSampler sampler2(800, 800, 1, 1, 0, false);
+    Film film2(800, 800, new TriangleFilter(1), "sphere.png");
 
     object_pool<Mesh> pool;
     vector<Point> vec;
-    vec.push_back(Point(-10, -10, 0));
-    vec.push_back(Point(+10, -10, 0));
-    vec.push_back(Point(+10, +10, 0));
-    vec.push_back(Point(-10, +10, 0));
+    vec.push_back(Point(-20, -20, 0));
+    vec.push_back(Point(+20, -20, 0));
+    vec.push_back(Point(+20, +20, 0));
+    vec.push_back(Point(-20, +20, 0));
 
     Polygon poly(vec, &pool);
-    AdapterPrimitive adpt(&poly);
+    UVSphere sphere(Point(0, 0, 8), 5, 8, 40, true, &pool);
+
+    AdapterPrimitive adpt1(&poly);
+    AdapterPrimitive adpt2(&sphere);
     StupidMaterial smat;
-    MaterialPrimitive matpt(&adpt, &smat);
-    Scene scene(&matpt, &oca2);
+    MaterialPrimitive matpt1(&adpt1, &smat);
+    MaterialPrimitive matpt2(&adpt2, &smat);
+
+    Agglomerate agg;
+    agg.addPrimitive(&matpt1);
+    agg.addPrimitive(&matpt2);
+
+    Scene scene(&agg, &oca2);
 
     vector<Point> vec2;
-    vec2.push_back(Point(-10, -10, 10));
-    vec2.push_back(Point(-10, +10, 10));
-    vec2.push_back(Point(+10, +10, 10));
-    vec2.push_back(Point(+10, -10, 10));
+    vec2.push_back(Point(-1, -1, 20));
+    vec2.push_back(Point(-1, +1, 20));
+    vec2.push_back(Point(+1, +1, 20));
+    vec2.push_back(Point(+1, -1, 20));
     Polygon poly2(vec2, &pool);
 
-    AreaLight areaLight(&poly2, Spectrum(100.f));
+    AreaLight areaLight(&poly2, Spectrum(50.f));
 
     scene.addLight(&areaLight);
 
     DirectIntegrator di(&scene, false);
-    Render render(&scene, &film2, &sampler2, &di);
+    Render render(&scene, &film2, &sampler2, &di, 100);
     di.setRender(&render);
     render.run();
-    film2.saveToDisk("whitepaper.png");
 
     pdash();
     pdash();

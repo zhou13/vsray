@@ -1,7 +1,6 @@
 #pragma once
 
 #include "core/vsray.hpp"
-#include "core/float.hpp"
 #include "core/geometry.hpp"
 
 VSRAY_NAMESPACE_BEGIN

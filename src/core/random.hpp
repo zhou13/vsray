@@ -1,9 +1,21 @@
+#pragma once
+
 #include "core/vsray.hpp"
 
 VSRAY_NAMESPACE_BEGIN
 
-Float nextRandomFloat(Float low = 0.f, Float high = 1.f);
-int nextRandomInt(int high);
-int nextRandomInt(int low, int high);
+class Random {
+public:
+    Random();
+    Float nextRandomFloat();
+    Float nextRandomFloat(Float high);
+    Float nextRandomFloat(Float low, Float high);
+    int nextRandomInt(int high);
+    int nextRandomInt(int low, int high);
+
+private:
+    std::random_device rd;
+    std::mt19937 gen;
+};
 
 VSRAY_NAMESPACE_END

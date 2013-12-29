@@ -7,11 +7,14 @@
 VSRAY_NAMESPACE_BEGIN
 
 const int PATCH_SIZE = 200;
-const unsigned int MAX_NUM_THREADS = 8;
 
 Render::Render(
-        Scene *scene, Film *film, Sampler *sampler, SurfaceIntegrator *si) :
-    scene(scene), film(film), sampler(sampler), si(si)
+        Scene *scene,
+        Film *film,
+        Sampler *sampler,
+        SurfaceIntegrator *si,
+        uint32_t maxThread) :
+    scene(scene), film(film), sampler(sampler), si(si), maxThread(maxThread)
 {
     width = film->width;
     height = film->height;
@@ -28,7 +31,12 @@ void Render::run()
 
     std::random_shuffle(patchQueue.begin(), patchQueue.end());
 
-    int numThread = std::min(std::thread::hardware_concurrency(), MAX_NUM_THREADS);
+    int numThread = std::min(std::thread::hardware_concurrency(), maxThread);
+    if (numThread == 0) {
+        printf("Warning: unable to detect the number of physical core\n");
+        printf("Fallback to single core mode\n");
+        numThread = 1;
+    }
     vector<std::thread> threads;
 
     globalIndex = 0;
@@ -44,7 +52,7 @@ void Render::subtaskRun()
         int idx = globalIndex++;
         if (idx >= (int)patchQueue.size())
             return;
-        std::cout << idx << std::endl;
+        printf("pitch: %d\n", idx);
 
         int x0 = patchQueue[idx].first;
         int y0 = patchQueue[idx].second;
@@ -68,6 +76,8 @@ void Render::subtaskRun()
                 break;
         }
 
+        film->saveToDisk();
+
         delete[] samples;
         delete subSampler;
     }
@@ -76,10 +86,10 @@ void Render::subtaskRun()
 Spectrum Render::raytrace(Sample &sample, const Ray& ray)
 {
     Intersection is;
-    if (scene->primitive->intersect(ray, &is)) {
+    if (scene->primitive->intersect(ray, &is, 0.f)) {
         is.mesh->fillIntersection(&is);
+        assert(is.bsdf);
         Spectrum r = si->radiance(sample, is);
-        // pobj(r);
         return r;
     }
     return Spectrum(0.f);

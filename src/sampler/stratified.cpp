@@ -74,12 +74,12 @@ void StratifiedSampler::initialize(int x0, int x1, int y0, int y1)
             }
     while (i > 0) {
         --i;
-        lensU[i] = nextRandomFloat();
-        lensV[i] = nextRandomFloat();
+        lensU[i] = random.nextRandomFloat();
+        lensV[i] = random.nextRandomFloat();
     }
 
     for (i = 0; i < numSamples; ++i) {
-        int j = nextRandomInt(0, numSamples);
+        int j = random.nextRandomInt(0, numSamples);
         std::swap(lensU[i], lensU[j]);
         std::swap(lensV[i], lensV[j]);
     }
@@ -132,7 +132,7 @@ int StratifiedSampler::roundSize(int size)
 Float StratifiedSampler::offset()
 {
     if (stratified)
-        return nextRandomFloat();
+        return random.nextRandomFloat();
     return .5f;
 }
 
@@ -145,7 +145,7 @@ void StratifiedSampler::genStratified1D(Float **f, int n)
     for (int i = 0; i < n; ++i)
         (*f)[i] = ((Float)i + offset()) * gap;
     for (int i = 0; i < n; ++i)
-        std::swap((*f)[i], (*f)[nextRandomInt(n)]);
+        std::swap((*f)[i], (*f)[random.nextRandomInt(n)]);
 }
 
 

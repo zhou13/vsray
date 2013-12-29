@@ -1,8 +1,7 @@
 #include "core/mesh.hpp"
+
 #include "core/ray.hpp"
 #include "core/intersection.hpp"
-
-#include "core/float.hpp"
 
 VSRAY_NAMESPACE_BEGIN
 
@@ -21,13 +20,32 @@ Mesh::Mesh(const Point &a, const Point &b, const Point &c,
     area = getArea();
 }
 
+Mesh::Mesh(const tuple<const Point &, const Point &, const Point &> &p) :
+    Mesh(std::get<0>(p), std::get<1>(p), std::get<2>(p))
+{
+    // pass
+}
+
+Mesh::Mesh(const tuple<const Point &, const Point &, const Point &> &p,
+           const tuple<const Normal &, const Normal &, const Normal &> &n) : 
+    Mesh(std::get<0>(p), std::get<1>(p), std::get<2>(p),
+         std::get<0>(n), std::get<1>(n), std::get<2>(n))
+{
+}
+
 BBox Mesh::getBBox() const
 {
     return BBox(a).merge(BBox(b)).merge(BBox(c));
 }
 
-bool Mesh::intersect(const Ray &ray, Intersection *is) const
+// if is == null, it is the shading ray
+bool Mesh::intersect(const Ray &ray, Intersection *is, Float epsilon) const
 {
+    // If we are calculating the shading ray and the current ray comming into a
+    // surface, we ignore it
+    if (!is && ray.d.dot(n) > 0)
+        return false;
+
     Vector e1 = a - c;
     Vector e2 = b - c;
     Vector s  = ray.o - c;
@@ -40,13 +58,13 @@ bool Mesh::intersect(const Ray &ray, Intersection *is) const
     deno = 1.f / deno;
 
     Float u = s1.dot(s) * deno;
-    if (!float_ge0(u))
+    if (u < -FLOAT_RELATIVE)
         return false;
     Float v = s2.dot(ray.d) * deno;
-    if (!float_ge0(v) || !float_le(u + v, 1))
+    if (v < -FLOAT_RELATIVE || u + v > 1 + FLOAT_RELATIVE)
         return false;
     Float t = s2.dot(e2) * deno;
-    if (float_le0(t) || t > ray.maxT)
+    if (t < epsilon || t > ray.maxT)
         return false;
 
     if (is) {
@@ -55,6 +73,7 @@ bool Mesh::intersect(const Ray &ray, Intersection *is) const
         is->u = u;
         is->v = v;
         is->t = t;
+        is->epsilon = t * 5e-4f;
         is->ray = &ray;
         is->mesh = this;
     }

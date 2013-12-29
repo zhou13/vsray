@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <tuple>
 #include <cmath>
 
 #ifndef DOUBLE_PRECISION
@@ -27,9 +28,11 @@ namespace vsray {
 #ifdef DOUBLE_PRECISION
     typedef double Float;
     typedef uint64_t intflt_t;
+    const float FLOAT_RELATIVE = 5e-8f;
 #else
     typedef float Float;
     typedef uint32_t intflt_t;
+    const float FLOAT_RELATIVE = 5e-5f;
 #endif
     const Float PI = Float(3.141592653589793238462);
     const Float INV_PI = 1.f / PI;
@@ -52,6 +55,10 @@ namespace vsray {
     using std::log;
     using std::ceil;
     using std::floor;
+
+    using std::tuple;
+    using std::tie;
+    using std::make_tuple;
 
     using std::string;
     using std::vector;

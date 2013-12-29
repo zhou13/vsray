@@ -15,7 +15,7 @@ class BSDF;
 class Intersection {
 public:
     Float u, v;
-    Float t;
+    Float t, epsilon;
     Point p;
 
     Normal nn, sn;
