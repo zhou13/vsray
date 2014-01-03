@@ -28,11 +28,9 @@ namespace vsray {
 #ifdef DOUBLE_PRECISION
     typedef double real;
     typedef uint64_t intflt_t;
-    const float FLOAT_RELATIVE = 5e-8f;
 #else
     typedef float real;
     typedef uint32_t intflt_t;
-    const float FLOAT_RELATIVE = 5e-5f;
 #endif
     const real PI = real(3.141592653589793238462);
     const real INV_PI = 1.f / PI;

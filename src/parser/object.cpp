@@ -8,7 +8,7 @@
 
 VSRAY_NAMESPACE_BEGIN
 
-const size_t KDTREE_THRESHOLD = 6;
+const size_t KDTREE_THRESHOLD = 6u;
 
 ObjectParser::~ObjectParser()
 {
@@ -58,7 +58,7 @@ void ObjectParser::handleShape(const tinyobj::shape_t &s)
     Meshset *meshset = new Meshset();
     for (size_t f = 0; f < s.mesh.indices.size() / 3; f++) {
         Mesh *mesh;
-        if (s.mesh.normals.size() != 0) {
+        if (s.mesh.normals.size() == -1) {
             mesh = pool.construct(
                     make_tuple(points[s.mesh.indices[3*f+0]],
                                points[s.mesh.indices[3*f+1]],
@@ -78,8 +78,9 @@ void ObjectParser::handleShape(const tinyobj::shape_t &s)
     Primitive *now = meshset;
     internal.push_back(meshset);
     if (meshset->size() > KDTREE_THRESHOLD) {
-        auto kdtree = new KdTree(meshset);
+        auto kdtree = new KdTree(*meshset);
         kdtree->initialize();
+        // kdtree->printTree(0, 0);
         now = kdtree;
     }
 

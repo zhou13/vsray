@@ -2,10 +2,12 @@
 #include "shape/meshset.hpp"
 #include "shape/mesh.hpp"
 
+#include <atomic>
+
 VSRAY_NAMESPACE_BEGIN
 
-const real T_SECT = 60;
-const real T_TRAV = 1;
+const real T_SECT = 80;
+const real T_TRAV = 15;
 const real EMPTY_BONUS = 0.5f;
 const int KDTREE_LEAF = 3;
 
@@ -14,10 +16,15 @@ const int MASK30 = 0x3FFFFFFF;
 
 const int STACK_SIZE = 30;
 
-KdTree::KdTree(Meshset *meshset): time(0)
+std::atomic_uint time(0);
+
+KdTree::KdTree() { }
+
+KdTree::KdTree(const Meshset &meshset)
 {
-    for (int i = 0; i < (int)meshset->size(); ++i)
-        addPrimitive((*meshset)[i]);
+    for (int i = 0; i < (int)meshset.size(); ++i) {
+        addPrimitive(meshset[i]);
+    }
 }
 
 void KdTree::initialize()
@@ -43,7 +50,7 @@ void KdTree::buildKdTree(
         vector<BBox> &primBBox,
         BBox cbox, int depth)
 {
-    if (prims.size() == 1 || depth == 0) {
+    if (prims.size() <= 1 || depth == 0) {
         addLeafNode(prims);
         return;
     }
@@ -55,8 +62,8 @@ void KdTree::buildKdTree(
 
         vector<tuple<real, bool, uint32_t>> line;
         for (uint32_t p: prims) {
-            real v0 = cbox.v0[dim];
-            real v1 = cbox.v1[dim];
+            real v0 = primBBox[p].v0[dim];
+            real v1 = primBBox[p].v1[dim];
             line.push_back(make_tuple(v0, true , p));
             line.push_back(make_tuple(v1, false, p));
         }
@@ -77,7 +84,7 @@ void KdTree::buildKdTree(
             if (!b)
                 --n1;
 
-            if (cbox.v0[dim] <= v && v <= cbox.v1[dim]) {
+            if (cbox.v0[dim] < v && v < cbox.v1[dim]) {
                 real x  = cbox.v1[dim0] - cbox.v0[dim0];
                 real y  = cbox.v1[dim1] - cbox.v0[dim1];
                 real z0 = v - cbox.v0[dim];
@@ -103,10 +110,10 @@ void KdTree::buildKdTree(
         vector<uint32_t> prim1;
         if (cutIndex != -1) {
             for (size_t i = 0; i < (size_t)cutIndex; ++i)
-                if (!std::get<1>(line[i]))
+                if (std::get<1>(line[i]))  // right edge is on left
                     prim0.push_back(std::get<2>(line[i]));
             for (size_t i = cutIndex+1; i < line.size(); ++i)
-                if (std::get<1>(line[i]))
+                if (!std::get<1>(line[i]))   // left edge is on right
                     prim1.push_back(std::get<2>(line[i]));
 
             KdTreeNode currNode;
@@ -116,20 +123,46 @@ void KdTree::buildKdTree(
             size_t index = tree.size();
             currNode.split = cutPosition;
             currNode.flag = dim & MASK2;
-            currNode.child = 0;
             tree.push_back(currNode);
 
             buildKdTree(prim0, primBBox, nbox0, depth-1);
-            if (!prim0.empty() && !prim1.empty())
-                tree[index].child = (uint32_t)tree.size() & MASK30;
+            tree[index].child = (uint32_t)tree.size() & MASK30;
             buildKdTree(prim1, primBBox, nbox1, depth-1);
 
             return;
         }
+
         dim = (dim+1) % 3;
     }
 
     addLeafNode(prims);
+}
+
+void KdTree::printTree(int index, int indent)
+{
+    auto node = &tree[index];
+    if (node->flag == KDTREE_LEAF) {
+        for (uint32_t i = node->itemID; i < node->itemID + node->itemCnt; ++i) {
+            for (int k = 0; k < indent; ++k)
+                printf(" ");
+            printf("| %s\n", ((Mesh *)(items[primID[i]]))->toString().c_str());
+        }
+        for (int k = 0; k < indent; ++k)
+            printf(" ");
+        puts("| <LEAF NODE>");
+        return;
+    }
+
+    for (int k = 0; k < indent; ++k)
+        printf(" ");
+    if (node->flag == 0)
+        printf("split at x: %.3f\n", node->split);
+    else if (node->flag == 1)
+        printf("split at y: %.3f\n", node->split);
+    else if (node->flag == 2)
+        printf("split at z: %.3f\n", node->split);
+    printTree(index+1, indent + 4);
+    printTree(node->child, indent + 4);
 }
 
 void KdTree::addLeafNode(vector<uint32_t> &prims)
@@ -152,8 +185,9 @@ BBox KdTree::getBBox() const
 
 bool KdTree::intersect(const Ray &ray, Intersection *is, real epilson) const
 {
-    ++time;
-    if (time == UINT32_MAX) {
+    uint32_t localTime = ++time;
+    if (localTime == UINT32_MAX) {
+        assert(false);
         time = 1;
         fill(visited.begin(), visited.end(), 0u);
     }
@@ -171,13 +205,16 @@ bool KdTree::intersect(const Ray &ray, Intersection *is, real epilson) const
         if (minT >  ray.maxT)
             break;
         if (node->flag == KDTREE_LEAF) {
+            bool found = false;
             for (uint32_t i = node->itemID; i < node->itemID + node->itemCnt; ++i) {
-                if (visited[primID[i]] == time)
+                if (visited[primID[i]] == localTime)
                     continue;
-                visited[primID[i]] = time;
+                visited[primID[i]] = localTime;
                 if (items[primID[i]]->intersect(ray, is, epilson))
-                    return true;
+                    found = true;
             }
+            if (found)
+                return true;
             if (top == 0)
                 break;
 
@@ -209,7 +246,7 @@ bool KdTree::intersect(const Ray &ray, Intersection *is, real epilson) const
             }
         }
     }
-    
+
     return false;
 }
 

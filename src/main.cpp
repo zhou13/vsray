@@ -19,6 +19,7 @@
 #include "parser/object.hpp"
 #include "primitive/agglomerate.hpp"
 #include "primitive/material.hpp"
+#include "primitive/kdtree.hpp"
 #include "sampler/stratified.hpp"
 #include "shape/mesh.hpp"
 #include "shape/meshset.hpp"
@@ -130,19 +131,29 @@ int main()
     // di.setRender(&render);
     // render.run();
 
+    Meshset meshset;
+    meshset.addMesh(new Mesh(Point(0, 0, 0), Point(1, 0, 0), Point(0, 1, 0)));
+    meshset.addMesh(new Mesh(Point(0, 0, 0), Point(0, 1, 0), Point(-1, 0, 0)));
+    meshset.addMesh(new Mesh(Point(0, 0, 0), Point(-1, 0, 0), Point(0, -1, 0)));
+    meshset.addMesh(new Mesh(Point(0, 0, 0), Point(0, -1, 0), Point(1, 0, 0)));
+    meshset.addMesh(new Mesh(Point(1, 1, 0), Point(-1, -1, 0), Point(1, -1, 0)));
+    KdTree kd(meshset);
+    kd.initialize();
+    // kd.printTree(0, 0);
+
     pdash();
     pdash();
 
     StratifiedSampler sampler3(800, 800, 1, 1, 0, false);
-    Film film3(800, 800, new TriangleFilter(1), "sphere.png");
+    Film film3(800, 800, new TriangleFilter(1), "bunny.png");
 
     ObjectParser objp;
-    objp.loadFile("bunny-1000.obj");
+    objp.loadFile("bunny.obj");
 
-    OrthoCamera oca3(Point(5, 0, 0), Vector(-1, 0, 0), Vector(0, 0, 1), 3, 3);
+    OrthoCamera oca3(Point(0, 5, -5), Vector(0, 0, 1), Vector(0, -1, 0), 12.f, 12.f);
     Scene scene2(objp.getPrimitives(), &oca3);
 
-    PointLight pointLight2(Point(5, 0, 0), 30);
+    PointLight pointLight2(Point(0, 5, -20), Spectrum(240, 480, 240));
     scene2.addLight(&pointLight2);
 
     DirectIntegrator di2(&scene2, false);

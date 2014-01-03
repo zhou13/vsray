@@ -57,16 +57,16 @@ public:
         }
         return false;
     }
-    inline bool maxExtent()
+    inline int maxExtent()
     {
         real e1 = x1 - x0;
         real e2 = y1 - y0;
         real e3 = z1 - z0;
         if (e1 >= e2 && e1 >= e3)
-            return e1;
+            return 0;
         if (e2 >= e3)
-            return e2;
-        return e3;
+            return 1;
+        return 2;
     }
 };
 

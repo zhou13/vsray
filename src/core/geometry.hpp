@@ -93,10 +93,9 @@ public:
         return v*f;
     }
     string toString() const {
-        return ("(" +
-                lexical_cast<string>(x) + ", " +
-                lexical_cast<string>(y) + ", " +
-                lexical_cast<string>(z) + ")");
+        static char buf[100];
+        snprintf(buf, 100, "(%+.3f, %+.3f, %+.3f)", x, y, z);
+        return string(buf);
     }
 };
 
@@ -186,10 +185,9 @@ public:
         return *this / length();
     }
     string toString() const {
-        return ("(" +
-                lexical_cast<string>(x) + ", " +
-                lexical_cast<string>(y) + ", " +
-                lexical_cast<string>(z) + ")");
+        static char buf[100];
+        snprintf(buf, 100, "(%+.3f, %+.3f, %+.3f)", x, y, z);
+        return string(buf);
     }
 };
 
@@ -242,10 +240,9 @@ public:
         return (*this-rhs).length2();
     }
     string toString() const {
-        return ("(" +
-                lexical_cast<string>(x) + ", " +
-                lexical_cast<string>(y) + ", " +
-                lexical_cast<string>(z) + ")");
+        static char buf[100];
+        snprintf(buf, 100, "(%+.3f, %+.3f, %+.3f)", x, y, z);
+        return string(buf);
     }
 };
 

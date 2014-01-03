@@ -7,6 +7,7 @@
 #include "core/render.hpp"
 #include "core/sample.hpp"
 #include "core/scene.hpp"
+#include "shape/mesh.hpp"
 
 VSRAY_NAMESPACE_BEGIN
 
@@ -62,8 +63,17 @@ Spectrum DirectIntegrator::directIllumination(
 
     Ray ray(is.p, wi, maxT);
     // shadow ray
-    // if (scene->intersect(ray, nullptr, is.epsilon))
-    //     return ret;
+    if (scene->intersect(ray, nullptr, is.epsilon)) {
+        // assert(is.shape != useless.shape);
+        // const Mesh *m = (dynamic_cast<const Mesh *>(useless.shape));
+        // // printf("%d, %.3f\n", m->index, useless.t);
+        // int t = m->index;
+        // if (t == 871) {
+        //     printf("%.3f %.3f\n", is.u, is.v);
+        //     return Spectrum(0.4f, 0.8f, 0.f);
+        // }
+        return Spectrum(0.f, 0.f, .2f);
+    }
 
     assert(is.bsdf);
     Vector wo = -is.ray->d.normalize();

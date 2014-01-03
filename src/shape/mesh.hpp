@@ -14,8 +14,12 @@ class Mesh : public Shape {
 public:
     const Point a, b, c;
     const Normal na, nb, nc;
-    bool nn;
+    const Vector e1, e2;
 
+    static int indexCnt;
+    int index;
+
+    bool nn;
     Normal n;
 
     real area;

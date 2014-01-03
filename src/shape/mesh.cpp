@@ -4,19 +4,23 @@
 
 VSRAY_NAMESPACE_BEGIN
 
+int Mesh::indexCnt = 0;
+
 Mesh::Mesh(const Point &a, const Point &b, const Point &c) :
-    a(a), b(b), c(c), nn(false)
+    a(a), b(b), c(c), e1(a-c), e2(b-c), nn(false)
 {
     n = Normal((b - a).cross(c - b).normalize());
     area = getArea();
+    index = ++indexCnt;
 }
 
 Mesh::Mesh(const Point &a, const Point &b, const Point &c,
            const Normal &na, const Normal &nb, const Normal &nc) :
-    a(a), b(b), c(c), na(na), nb(nb), nc(nc), nn(true)
+    a(a), b(b), c(c), na(na), nb(nb), nc(nc), e1(a-c), e2(b-c), nn(true)
 {
     n = Normal((b - a).cross(c - b).normalize());
     area = getArea();
+    index = ++indexCnt;
 }
 
 Mesh::Mesh(const tuple<const Point &, const Point &, const Point &> &p) :
@@ -45,8 +49,6 @@ bool Mesh::intersect(const Ray &ray, Intersection *is, real epsilon) const
     if (!is && ray.d.dot(n) > 0)
         return false;
 
-    Vector e1 = a - c;
-    Vector e2 = b - c;
     Vector s  = ray.o - c;
     Vector s1 = ray.d.cross(e2);
     Vector s2 = s.cross(e1);
@@ -56,14 +58,15 @@ bool Mesh::intersect(const Ray &ray, Intersection *is, real epsilon) const
         return false;
     deno = 1.f / deno;
 
+    // const float FLOAT_RELATIVE = 4e-5f;
     real u = s1.dot(s) * deno;
-    if (u < -FLOAT_RELATIVE)
+    if (u < 0)
         return false;
     real v = s2.dot(ray.d) * deno;
-    if (v < -FLOAT_RELATIVE || u + v > 1 + FLOAT_RELATIVE)
+    if (v < 0 || u + v > 1)
         return false;
     real t = s2.dot(e2) * deno;
-    if (t < epsilon || t > ray.maxT)
+    if (t < epsilon || t < 1e-2 || t > ray.maxT)
         return false;
 
     if (is) {
@@ -72,7 +75,7 @@ bool Mesh::intersect(const Ray &ray, Intersection *is, real epsilon) const
         is->u = u;
         is->v = v;
         is->t = t;
-        is->epsilon = t * 5e-4f;
+        is->epsilon = t * 1e-3f;
         is->ray = &ray;
         is->shape = this;
     }
@@ -88,7 +91,7 @@ void Mesh::fillIntersection(Intersection *is) const
 
 Point Mesh::uvToPoint(real u, real v) const
 {
-    real w = 1 - u - v;
+    real w = 1.f - u - v;
     return Point(Vector(a) * u + Vector(b) * v + Vector(c) * w);
 }
 
@@ -96,7 +99,7 @@ Normal Mesh::uvToNormal(real u, real v) const
 {
     if (!nn)
         return n;
-    real w = 1 - u - v;
+    real w = 1.f - u - v;
     return (Normal(na) * u + Normal(nb) * v + Normal(nc) * w).normalize();
 }
 

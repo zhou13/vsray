@@ -23,9 +23,11 @@ class Meshset;
 
 class KdTree : public Agglomerate {
 public:
-    KdTree(Meshset *meshset);
+    KdTree();
+    KdTree(const Meshset &meshset);
 
     void initialize();
+    void printTree(int index, int indent);
     virtual BBox getBBox() const;
     virtual bool intersect(const Ray &ray, Intersection *is, real epilson) const;
 
@@ -35,7 +37,6 @@ private:
     vector<uint32_t> primID;
 
     mutable vector<uint32_t> visited;
-    mutable uint32_t time;
 
     void buildKdTree(
             vector<uint32_t> &prims,

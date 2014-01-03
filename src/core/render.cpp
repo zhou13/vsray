@@ -2,6 +2,7 @@
 #include "core/sample.hpp"
 #include "core/camera.hpp"
 #include "core/ray.hpp"
+#include "shape/mesh.hpp"
 
 #include <thread>
 
@@ -94,7 +95,7 @@ Spectrum Render::raytrace(Sample &sample, const Ray& ray)
         Spectrum r = si->radiance(sample, is);
         return r;
     }
-    return Spectrum(0.f);
+    return Spectrum(1.f, 0.f, 0.f);
 }
 
 VSRAY_NAMESPACE_END
