@@ -9,7 +9,7 @@ class Intersection;
 // BxDF + Texture = Material
 class Material {
 public:
-    virtual shared_ptr<BSDF> getBSDF(Intersection *is) = 0;
+    virtual shared_ptr<BSDF> getBSDF(Intersection &is) const = 0;
     virtual ~Material() { }
 };
 

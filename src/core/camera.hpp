@@ -13,6 +13,7 @@ protected:
     Transform cameraToWorld;
 
 public:
+    Camera(const Transform &tr) : cameraToWorld(tr) { }
     Camera(const Point &from, const Vector &to, const Vector &up) :
         cameraToWorld(Transform::lookAt(from, to, up)) { }
 

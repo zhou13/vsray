@@ -74,8 +74,8 @@ void StratifiedSampler::initialize(int x0, int x1, int y0, int y1)
             }
     while (i > 0) {
         --i;
-        lensU[i] = random.nextRandomreal();
-        lensV[i] = random.nextRandomreal();
+        lensU[i] = random.nextRandomReal();
+        lensV[i] = random.nextRandomReal();
     }
 
     for (i = 0; i < numSamples; ++i) {
@@ -113,6 +113,9 @@ bool StratifiedSampler::genSamples(Sample *samples, int *n)
         genStratified1D(&samples[*n].bxdfV, nBSDF);
         genStratified1D(&samples[*n].bxdfI, nBSDF);
 
+        checkOne(samples[*n].lightI, nLight);
+        checkOne(samples[*n].lightJ, nLight);
+
         (*n) += 1;
     }
 
@@ -132,7 +135,7 @@ int StratifiedSampler::roundSize(int size)
 real StratifiedSampler::offset()
 {
     if (stratified)
-        return random.nextRandomreal();
+        return random.nextRandomReal();
     return .5f;
 }
 
@@ -146,6 +149,20 @@ void StratifiedSampler::genStratified1D(real **f, int n)
         (*f)[i] = ((real)i + offset()) * gap;
     for (int i = 0; i < n; ++i)
         std::swap((*f)[i], (*f)[random.nextRandomInt(n)]);
+}
+
+void StratifiedSampler::checkOne(real *f, int n)
+{
+    for (int i = 0; i < n; ++i)
+        if (f[i] >= 1.f) {
+            union {
+                real f;
+                intflt_t i;
+            } c;
+            c.f = f[i];
+            --c.i;
+            f[i] = c.f;
+        }
 }
 
 

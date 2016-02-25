@@ -19,6 +19,7 @@ public:
     Scene(Primitive *primitive, Camera *camera, const vector<Light *> &lights);
 
     void addLight(Light *lights);
+    void clearLight();
     Light* sampleLight(real number);
     bool intersect(const Ray &ray, Intersection *is, real epsilon) const;
 };

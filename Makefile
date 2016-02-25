@@ -11,17 +11,17 @@ INCLUDE_DIR = -I src
 DEFINES = -D__DEBUG_BUILD
 
 
-CXXFLAGS += -fsanitize=address
-CXXFLAGS += -Og
+# CXXFLAGS += -fsanitize=address -Og -g
+CXXFLAGS += -O2 -DNDEBUG
 CXXFLAGS += -std=c++11
 CXXFLAGS += -Wall -Wextra -Wconversion #-Wno-unused-private-field
 CXXFLAGS += $(INCLUDE_DIR)
 CXXFLAGS += $(shell pkg-config --cflags opencv)
 #CXXFLAGS += -fopenmp
 
-LDFLAGS = -lboost_system -lboost_thread-mt $(shell pkg-config --libs opencv)
+LDFLAGS = -lboost_system -lboost_filesystem -lboost_thread-mt $(shell pkg-config --libs opencv)
 
-CXX = g++-4.8.2
+CXX = g++
 CXXSOURCES = $(shell find src/ -name "*.cpp")
 OBJS = $(addprefix $(OBJ_DIR)/,$(CXXSOURCES:.cpp=.o))
 DEPFILES = $(OBJS:.o=.d)

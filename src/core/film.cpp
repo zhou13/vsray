@@ -22,13 +22,9 @@ Film::~Film()
     delete filter;
 }
 
-real Film::clamp(real v, real min, real max)
+void Film::setFilename(const string &filename_)
 {
-    if (v > max)
-        return max;
-    if (v < min)
-        return min;
-    return v;
+    filename = filename_;
 }
 
 static std::mutex filmMutex;
@@ -38,7 +34,7 @@ void Film::addSample(const Sample &sample, Spectrum sp)
     std::unique_lock<std::mutex> lock(filmMutex);
 
     real x = (real)width  * sample.imageX;
-    real y = (real)height * sample.imageY;
+    real y = (real)height * (1 - sample.imageY);
 
     int i0 = (int)std::max(ceil(y-dy), 0.f);
     int j0 = (int)std::max(ceil(x-dx), 0.f);
@@ -51,6 +47,16 @@ void Film::addSample(const Sample &sample, Spectrum sp)
             image[i * width + j].color += sp * weight;
             image[i * width + j].weight += weight;
         }
+}
+
+void Film::clear()
+{
+    for (int i = 0; i < height; ++i)
+        for (int j = 0; j < width; ++j) {
+            image[i * width + j].color = 0.;
+            image[i * width + j].weight = 0;
+        }
+
 }
 
 void Film::saveToDisk()
@@ -68,7 +74,8 @@ void Film::saveToDisk()
             real rgb[3];
 
             if (image[k].weight == 0.f) {
-                rgb[0] = rgb[1] = rgb[2] = 0.f;
+                rgb[0] = rgb[1] = 0.f;
+                rgb[2] = 1.f;
             } else {
                 (image[k].color / image[k].weight).getRGB(rgb);
             }

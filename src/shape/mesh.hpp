@@ -15,11 +15,12 @@ public:
     const Point a, b, c;
     const Normal na, nb, nc;
     const Vector e1, e2;
+    real ua, va, ub, vb, uc, vc;
 
     static int indexCnt;
     int index;
 
-    bool nn;
+    bool nn, uv;
     Normal n;
 
     real area;
@@ -37,6 +38,7 @@ public:
 
     Point uvToPoint(real u, real v) const;
     Normal uvToNormal(real u, real v) const;
+    tuple<real, real> uvToUV(real u, real v) const;
     string toString() const;
 
 private:

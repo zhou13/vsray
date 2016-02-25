@@ -20,7 +20,7 @@ bool MaterialPrimitive::intersect(const Ray &ray, Intersection *is, real epsilon
 {
     if (primitive->intersect(ray, is, epsilon)) {
         if (is)
-            is->bsdf = material->getBSDF(is);
+            is->material = material;
         return true;
     }
     return false;

@@ -20,6 +20,7 @@ public:
 
     void run();
     void subtaskRun();
+    void saveToDisk();
     Spectrum raytrace(Sample &sample, const Ray& ray);
 
 private:

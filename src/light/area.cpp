@@ -37,7 +37,7 @@ Spectrum AreaLight::sampleL(
     if (*pdf == 0.f)
         return Spectrum(0.f);
     *len = sqrt(*len);
-    *pdf *= m->area / (real)shape->size();
+    *pdf /= (real)shape->size();
 
     /*
     real sumProjectArea = 0.f;

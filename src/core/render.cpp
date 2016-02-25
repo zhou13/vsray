@@ -4,11 +4,13 @@
 #include "core/ray.hpp"
 #include "shape/mesh.hpp"
 
+#include <chrono>
 #include <thread>
 
 VSRAY_NAMESPACE_BEGIN
 
-const int PATCH_SIZE = 200;
+const int PATCH_SIZE = 50;
+const int SAVE_INTERVAL = 4000;
 
 Render::Render(
         Scene *scene,
@@ -26,6 +28,8 @@ void Render::run()
 {
     int cntW = (width-1) / PATCH_SIZE + 1;
     int cntH = (height-1) / PATCH_SIZE + 1;
+
+    patchQueue.clear();
     for (int i = 0; i < cntW; ++i)
         for (int j = 0; j < cntH; ++j)
             patchQueue.push_back(std::make_pair(
@@ -44,8 +48,10 @@ void Render::run()
     globalIndex = 0;
     for (int i = 0; i < numThread; ++i)
         threads.push_back(std::thread(&Render::subtaskRun, this));
+    std::thread(&Render::saveToDisk, this).join();
     for (int i = 0; i < numThread; ++i)
         threads[i].join();
+    film->saveToDisk();
 }
 
 void Render::subtaskRun()
@@ -79,10 +85,20 @@ void Render::subtaskRun()
                 break;
         }
 
-        film->saveToDisk();
 
         delete[] samples;
         delete subSampler;
+    }
+}
+
+void Render::saveToDisk()
+{
+    std::chrono::milliseconds dura(2000);
+    for (;;) {
+        std::this_thread::sleep_for(dura);
+        film->saveToDisk();
+        if (globalIndex >= (int)patchQueue.size())
+            return;
     }
 }
 
@@ -90,12 +106,18 @@ Spectrum Render::raytrace(Sample &sample, const Ray& ray)
 {
     Intersection is;
     if (scene->primitive->intersect(ray, &is, 0.f)) {
+        // const Mesh *m = (dynamic_cast<const Mesh *>(is.shape));
+        // if (m->index == 15859) {
+        //     assert(false);
+        //     return Spectrum(1, 0, 0);
+        // }
         is.fillIntersection();
         assert(is.bsdf);
         Spectrum r = si->radiance(sample, is);
         return r;
     }
-    return Spectrum(1.f, 0.f, 0.f);
+    // return Spectrum(.0f, 170.f / 255.f, 1.f);
+    return Spectrum(0.2f);
 }
 
 VSRAY_NAMESPACE_END

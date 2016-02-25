@@ -40,6 +40,7 @@ private:
 
     real offset();
     void genStratified1D(real **f, int n);
+    void checkOne(real *f, int n);
 };
 
 VSRAY_NAMESPACE_END

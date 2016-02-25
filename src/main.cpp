@@ -20,6 +20,7 @@
 #include "primitive/agglomerate.hpp"
 #include "primitive/material.hpp"
 #include "primitive/kdtree.hpp"
+#include "primitive/transform.hpp"
 #include "sampler/stratified.hpp"
 #include "shape/mesh.hpp"
 #include "shape/meshset.hpp"
@@ -94,7 +95,7 @@ int main()
     // StratifiedSampler sampler2(800, 800, 1, 1, 0, false);
     // Film film2(800, 800, new TriangleFilter(1), "sphere.png");
 
-    // object_pool<Mesh> pool;
+    object_pool<Mesh> pool;
     // vector<Point> vec;
     // vec.push_back(Point(-20, -20, 0));
     // vec.push_back(Point(+20, -20, 0));
@@ -131,35 +132,68 @@ int main()
     // di.setRender(&render);
     // render.run();
 
-    Meshset meshset;
-    meshset.addMesh(new Mesh(Point(0, 0, 0), Point(1, 0, 0), Point(0, 1, 0)));
-    meshset.addMesh(new Mesh(Point(0, 0, 0), Point(0, 1, 0), Point(-1, 0, 0)));
-    meshset.addMesh(new Mesh(Point(0, 0, 0), Point(-1, 0, 0), Point(0, -1, 0)));
-    meshset.addMesh(new Mesh(Point(0, 0, 0), Point(0, -1, 0), Point(1, 0, 0)));
-    meshset.addMesh(new Mesh(Point(1, 1, 0), Point(-1, -1, 0), Point(1, -1, 0)));
-    KdTree kd(meshset);
-    kd.initialize();
-    // kd.printTree(0, 0);
-
-    pdash();
-    pdash();
-
-    StratifiedSampler sampler3(800, 800, 1, 1, 0, false);
-    Film film3(800, 800, new TriangleFilter(1), "bunny.png");
+    StratifiedSampler sampler3(1024, 768, 64, 1, 0, true);
+    Film film3(1024, 768, new TriangleFilter(1.5f), "bunny-DOF.png");
 
     ObjectParser objp;
-    objp.loadFile("bunny.obj");
+    // objp.loadFile("scene/bunny.obj");
+    objp.loadFile("scene/bunny-1000-smooth.obj");
+    auto prim = objp.getPrimitives();
+    objp.addBottomPanel(8.f, 32.f);
 
-    OrthoCamera oca3(Point(0, 5, -5), Vector(0, 0, 1), Vector(0, -1, 0), 12.f, 12.f);
-    Scene scene2(objp.getPrimitives(), &oca3);
+    Agglomerate agg;
+    for (int i = -4; i <= 4; ++i)
+        if (i != 0) {
+            auto tp = new TransformPrimitive(
+                    prim, Transform::translate(Vector(0, 3.1f * real(i), 0)));
+            agg.addPrimitive(tp);
+        }
+    agg.addPrimitive(objp.getPrimitives());
 
-    PointLight pointLight2(Point(0, 5, -20), Spectrum(240, 480, 240));
-    scene2.addLight(&pointLight2);
+    Point man = Point(7, -25.f, 3);
+    Transform tr = Transform::rotateZ(0.f);
+    PerspCamera oca3(
+            Transform::lookAt(
+                    tr(man),
+                    tr(Vector(-.45f, 1.f, -0.25f).normalize()),
+                    Vector(0.f, 0.f, 1)
+            ),
+            10.f, 7.f, 12.f, 0.2f ,24.f);
+    Scene scene2(&agg, &oca3);
+
+    // vector<Point> vec3 = {
+    //     Point(-30, -20, +20),
+    //     Point(+30, -20, +20),
+    //     Point(+30, -20, -15),
+    //     Point(-30, -20, -15)
+    // };
+    // Polygon poly3(vec3, &pool);
+    // AreaLight areaLight3(&poly3, 2.0f);
+    // scene2.addLight(&areaLight3);
+    scene2.addLight(new PointLight(man, 1000));
+    scene2.addLight(new PointLight(Point(0, 0, 10), 200));
+    scene2.addLight(new PointLight(Point(0, 10, 10), 200));
+    scene2.addLight(new PointLight(Point(-10, 0, 10), 200));
+    scene2.addLight(new PointLight(Point(0, 5, 10), 100));
 
     DirectIntegrator di2(&scene2, false);
     Render render2(&scene2, &film3, &sampler3, &di2);
     di2.setRender(&render2);
-    render2.run();
+    // render2.run();
+
+    real minF = 8.f;
+    real maxF = 42.f;
+
+    int count = 30*10;
+    for (int i = 0; i < count; ++i) {
+        char buf[50];
+        snprintf(buf, 50, "movie/dof%03d.png", i);
+        oca3.setFocalDistance(minF + (maxF-minF) / (real)count * (real)i);
+        film3.setFilename(string(buf));
+        film3.clear();
+
+        render2.run();
+    }
 
     return 0;
 }

@@ -239,6 +239,9 @@ public:
     real distance2(const Point &rhs) const {
         return (*this-rhs).length2();
     }
+    bool operator ==(const Point &rhs) const {
+        return x == rhs.x && y == rhs.y && z == rhs.z;
+    }
     string toString() const {
         static char buf[100];
         snprintf(buf, 100, "(%+.3f, %+.3f, %+.3f)", x, y, z);

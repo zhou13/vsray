@@ -5,11 +5,11 @@
 
 VSRAY_NAMESPACE_BEGIN
 
-BSDF::BSDF(const Intersection *is) :
-    ex(), ey(), ez(is->sn)
+BSDF::BSDF(const Intersection &is) :
+    ex(), ey(), ez(is.sn)
 {
-    ez = is->sn;
-    ex = is->ta;
+    ez = is.sn;
+    ex = is.ta;
     ey = ez.cross(ex);
 }
 

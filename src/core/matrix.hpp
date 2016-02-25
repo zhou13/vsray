@@ -58,31 +58,31 @@ public:
         m[2] = m2;
         m[3] = m3;
     }
-    string toString() {
+    string toString() const {
         return (lexical_cast<string>(m[0]) + " " +
                 lexical_cast<string>(m[1]) + " " +
                 lexical_cast<string>(m[2]) + " " +
                 lexical_cast<string>(m[3]));
     }
-    Matrix4x1 operator +(const Matrix4x1 &rhs) {
+    Matrix4x1 operator +(const Matrix4x1 &rhs) const {
         Matrix4x1 r;
         for (int i = 0; i < 4; ++i)
             r.m[i] = m[i] + rhs.m[i];
         return r;
     }
-    Matrix4x1 operator -(const Matrix4x1 &rhs) {
+    Matrix4x1 operator -(const Matrix4x1 &rhs) const {
         Matrix4x1 r;
         for (int i = 0; i < 4; ++i)
             r.m[i] = m[i] - rhs.m[i];
         return r;
     }
-    Matrix4x1 operator *(const real &rhs) {
+    inline Matrix4x1 operator *(const real &rhs) const {
         Matrix4x1 r;
         for (int i = 0; i < 4; ++i)
             r.m[i] = m[i] * rhs;
         return r;
     }
-    Matrix4x1 operator /(const real &rhs) {
+    Matrix4x1 operator /(const real &rhs) const {
         assert(rhs != 0);
 
         Matrix4x1 r;
@@ -185,7 +185,7 @@ public:
         return r;
     }
 
-    Matrix4x4 transpose() {
+    Matrix4x4 transpose() const {
         Matrix4x4 r;
         for (int i = 0; i < 4; ++i)
             for (int j = 0; j < 4; ++j)
@@ -193,7 +193,7 @@ public:
         return r;
     }
 
-    real det() {
+    real det() const {
         return (
                 m[3 ]*m[6 ]*m[9 ]*m[12] - m[2 ]*m[7 ]*m[9 ]*m[12] -
                 m[3 ]*m[5 ]*m[10]*m[12] + m[1 ]*m[7 ]*m[10]*m[12] +
@@ -210,7 +210,7 @@ public:
         );
     }
 
-    Matrix4x4 inverse() {
+    Matrix4x4 inverse() const {
         Matrix4x4 r;
         real det;
 

@@ -8,19 +8,19 @@ Random::Random() : gen(rd())
     // pass
 }
 
-real Random::nextRandomreal()
+real Random::nextRandomReal()
 {
     std::uniform_real_distribution<real> dis(0.f, 1.f);
     return (real)dis(gen);
 }
 
-real Random::nextRandomreal(real high)
+real Random::nextRandomReal(real high)
 {
     std::uniform_real_distribution<real> dis(0.f, high);
     return (real)dis(gen);
 }
 
-real Random::nextRandomreal(real low, real high)
+real Random::nextRandomReal(real low, real high)
 {
     std::uniform_real_distribution<real> dis(low, high);
     return (real)dis(gen);

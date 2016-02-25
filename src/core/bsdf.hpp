@@ -12,7 +12,7 @@ class Intersection;
 
 class BSDF {
 public:
-    BSDF(const Intersection *is);
+    BSDF(const Intersection &is);
     ~BSDF();
     void addBxDF(BxDF *bxdf);
     real pdf(const Vector &wo, const Vector &wi) const;

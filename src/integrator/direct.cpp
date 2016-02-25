@@ -61,31 +61,47 @@ Spectrum DirectIntegrator::directIllumination(
     if (lightPdf == 0)
         return ret;
 
+    // // shadow ray
     Ray ray(is.p, wi, maxT);
-    // shadow ray
     if (scene->intersect(ray, nullptr, is.epsilon)) {
         // assert(is.shape != useless.shape);
         // const Mesh *m = (dynamic_cast<const Mesh *>(useless.shape));
+        // const Mesh *m0 = (dynamic_cast<const Mesh *>(is.shape));
         // // printf("%d, %.3f\n", m->index, useless.t);
         // int t = m->index;
-        // if (t == 871) {
+        // // printf("%d, %.3f\n", m->index, useless.t);
+        // if (t == 15859) {
         //     printf("%.3f %.3f\n", is.u, is.v);
-        //     return Spectrum(0.4f, 0.8f, 0.f);
+        //     useless.fillIntersection();
+        //     pobj(*m0);
+        //     pobj(is.p);
+        //     pobj(*m);
+        //     pobj(useless.p);
+        //     pobj(wi);
+        // return Spectrum(0.4f, 0.8f, 0.f);
         // }
-        return Spectrum(0.f, 0.f, .2f);
+        return ret;
     }
 
     assert(is.bsdf);
     Vector wo = -is.ray->d.normalize();
     Spectrum f = is.bsdf->f(wo, wi);
 
+    // if (wi.dot(is.sn) <= 0)
+    //     return Spectrum(0, 1, 1);
     if (light->isDelta()) {
-        ret += f * li * abs(wo.dot(is.sn)) * lightPdf;
+        ret += f * li * clamp(wi.dot(is.sn), 0.f, 1.f) * lightPdf;
     } else {
         // bsdfPdf = is.bsdf->pdf(wo, wi);
         real weight = misPowerHeuristic(1, lightPdf, 0, 0.f);
-        ret += f * li * abs(wo.dot(is.sn)) * weight / lightPdf;
+        ret += f * li * abs(wi.dot(is.sn)) * weight / lightPdf;
     }
+
+    // TODO  using bsdf
+    // Vector ref = wo - 2.f * (wo - is.sn * wo.dot(is.sn));
+    // real vdot = ref.dot(is.ray->d);
+    // if (vdot < 0)
+    //     ret += f * li * powf(-vdot, 50.f) / lightPdf;
 
     return ret;
     // TODO add BSDF sample: for reflectance

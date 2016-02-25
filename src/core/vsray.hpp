@@ -66,6 +66,23 @@ namespace vsray {
 
     using boost::lexical_cast;
     using boost::object_pool;
+
+    inline real clamp(real v, real min, real max)
+    {
+        if (v > max)
+            return max;
+        if (v < min)
+            return min;
+        return v;
+    }
+
+    inline real tile(real v, real m)
+    {
+        v = std::fmod(v, m);
+        if (v < 0)
+            v += m;
+        return v;
+    }
 }
 
 #define pobj(x) fprintf(stderr, "[%s::%d] %s\n", __FILE__, __LINE__, (x).toString().c_str())

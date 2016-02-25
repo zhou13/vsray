@@ -4,15 +4,16 @@
 
 VSRAY_NAMESPACE_BEGIN
 
-StupidMaterial::StupidMaterial(Spectrum sp) : sp(sp)
+StupidMaterial::StupidMaterial(shared_ptr<Texture<Spectrum>> color) :
+    color(color)
 {
     // pass
 }
 
-shared_ptr<BSDF> StupidMaterial::getBSDF(Intersection *is)
+shared_ptr<BSDF> StupidMaterial::getBSDF(Intersection &is) const
 {
     shared_ptr<BSDF> b(make_shared<BSDF>(is));
-    b->addBxDF(new Lambertian(Spectrum(sp)));
+    b->addBxDF(new Lambertian(color->evaluate(is)));
     return b;
 }
 

@@ -57,6 +57,21 @@ public:
         }
         return false;
     }
+    inline bool intersect(const Ray &ray, real *minT, real *maxT) const {
+        for (int i = 0; i < 3; ++i) {
+            real invD = 1.f / ray.d[i];
+            real t0 = (v0[i] - ray.o[i]) * invD;
+            real t1 = (v1[i] - ray.o[i]) * invD;
+            if (t0 > t1)
+                std::swap(t0, t1);
+            *minT = std::max(*minT, t0);
+            *maxT = std::min(*maxT, t1);
+            if (*minT > *maxT)
+                return false;
+        }
+
+        return minT < maxT;
+    }
     inline int maxExtent()
     {
         real e1 = x1 - x0;
@@ -67,6 +82,13 @@ public:
         if (e2 >= e3)
             return 1;
         return 2;
+    }
+    inline string toString()
+    {
+        static char buf[50];
+        snprintf(buf, 50, "(%.3f %.3f %.3f), (%.3f, %.3f, %.3f)",
+                 x0, y0, z0, z1, y1, z1);
+        return buf;
     }
 };
 

@@ -23,6 +23,11 @@ void Scene::addLight(Light *light)
     lights.push_back(light);
 }
 
+void Scene::clearLight()
+{
+    lights.clear();
+}
+
 Light* Scene::sampleLight(real number)
 {
     return lights[int(real(lights.size()) * number)];

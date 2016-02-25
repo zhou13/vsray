@@ -17,6 +17,8 @@ public:
     virtual Camera *getCamera();
     virtual ~ObjectParser();
 
+    void addBottomPanel(real width, real height);
+
 private:
     vector<tinyobj::shape_t> shapes;
 
@@ -26,6 +28,9 @@ private:
     vector<Primitive *> internal;
 
     object_pool<Mesh> pool;
+
+    real lowest;
+    string pathname;
 
     void handleShape(const tinyobj::shape_t &s);
     bool isZero(const float *f);

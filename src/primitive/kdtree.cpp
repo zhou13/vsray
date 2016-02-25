@@ -7,7 +7,7 @@
 VSRAY_NAMESPACE_BEGIN
 
 const real T_SECT = 80;
-const real T_TRAV = 15;
+const real T_TRAV = 1;
 const real EMPTY_BONUS = 0.5f;
 const int KDTREE_LEAF = 3;
 
@@ -15,6 +15,7 @@ const int MASK2 = 0x3;
 const int MASK30 = 0x3FFFFFFF;
 
 const int STACK_SIZE = 30;
+const size_t NODE_SIZE = 3;
 
 std::atomic_uint time(0);
 
@@ -37,6 +38,7 @@ void KdTree::initialize()
         box = box.merge(b);
         primBBox.push_back(b);
     }
+    // pobj(box);
 
     vector<uint32_t> prims;
     for (uint32_t i = 0; i < items.size(); ++i)
@@ -50,7 +52,7 @@ void KdTree::buildKdTree(
         vector<BBox> &primBBox,
         BBox cbox, int depth)
 {
-    if (prims.size() <= 1 || depth == 0) {
+    if (prims.size() <= NODE_SIZE || depth == 0) {
         addLeafNode(prims);
         return;
     }
@@ -89,8 +91,8 @@ void KdTree::buildKdTree(
                 real y  = cbox.v1[dim1] - cbox.v0[dim1];
                 real z0 = v - cbox.v0[dim];
                 real z1 = cbox.v1[dim] - v;
-                real area0 = (x * y + z0 * (x + y));
-                real area1 = (x * y + z1 * (x + y));
+                real area0 = 2 * (x * y + z0 * (x + y));
+                real area1 = 2 * (x * y + z1 * (x + y));
                 real bonus = (n0 == 0 || n1 == 0) ? (1 - EMPTY_BONUS) : 1;
                 real cost = T_TRAV + T_SECT * bonus *
                     (area0 * (real)n0 + area1 * (real)n1) * invArea;
@@ -110,10 +112,10 @@ void KdTree::buildKdTree(
         vector<uint32_t> prim1;
         if (cutIndex != -1) {
             for (size_t i = 0; i < (size_t)cutIndex; ++i)
-                if (std::get<1>(line[i]))  // right edge is on left
+                if (std::get<1>(line[i]))
                     prim0.push_back(std::get<2>(line[i]));
-            for (size_t i = cutIndex+1; i < line.size(); ++i)
-                if (!std::get<1>(line[i]))   // left edge is on right
+            for (size_t i = cutIndex + 1; i < line.size(); ++i)
+                if (!std::get<1>(line[i]))
                     prim1.push_back(std::get<2>(line[i]));
 
             KdTreeNode currNode;
@@ -136,6 +138,19 @@ void KdTree::buildKdTree(
     }
 
     addLeafNode(prims);
+}
+
+void KdTree::addLeafNode(vector<uint32_t> &prims)
+{
+    KdTreeNode currNode;
+    currNode.flag = KDTREE_LEAF;
+    currNode.itemID = (uint32_t)primID.size();
+    currNode.itemCnt = (uint32_t)prims.size() & MASK30;
+
+    for(uint32_t p: prims)
+        primID.push_back(p);
+
+    tree.push_back(currNode);
 }
 
 void KdTree::printTree(int index, int indent)
@@ -165,19 +180,6 @@ void KdTree::printTree(int index, int indent)
     printTree(node->child, indent + 4);
 }
 
-void KdTree::addLeafNode(vector<uint32_t> &prims)
-{
-    KdTreeNode currNode;
-    currNode.flag = KDTREE_LEAF;
-    currNode.itemID = (uint32_t)primID.size();
-    currNode.itemCnt = (uint32_t)prims.size() & MASK30;
-
-    for(uint32_t p: prims)
-        primID.push_back(p);
-
-    tree.push_back(currNode);
-}
-
 BBox KdTree::getBBox() const
 {
     return box;
@@ -185,9 +187,21 @@ BBox KdTree::getBBox() const
 
 bool KdTree::intersect(const Ray &ray, Intersection *is, real epilson) const
 {
+    real minT = is ? epilson : 0;
+    real maxT = ray.maxT;
+
+    if (!box.intersect(ray, &minT, &maxT))
+        return false;
+    // if (is) {
+    //     bool found = false;
+    //     for (auto p: items)
+    //         if (p->intersect(ray, is, epilson))
+    //             found = true;
+    //     return found;
+    // }
+
     uint32_t localTime = ++time;
     if (localTime == UINT32_MAX) {
-        assert(false);
         time = 1;
         fill(visited.begin(), visited.end(), 0u);
     }
@@ -196,25 +210,20 @@ bool KdTree::intersect(const Ray &ray, Intersection *is, real epilson) const
     tuple<real, real, decltype(node)> stack[STACK_SIZE];
     int top = 0;
 
-    real minT = 0, maxT = ray.maxT;
-    if (is)
-        minT = epilson;
-
     real invD[3] = { 1.f / ray.d.x, 1.f / ray.d.y, 1.f / ray.d.z };
+    bool found = false;
     for (;;) {
         if (minT >  ray.maxT)
             break;
         if (node->flag == KDTREE_LEAF) {
-            bool found = false;
             for (uint32_t i = node->itemID; i < node->itemID + node->itemCnt; ++i) {
                 if (visited[primID[i]] == localTime)
                     continue;
                 visited[primID[i]] = localTime;
+                assert(primID[i] < items.size());
                 if (items[primID[i]]->intersect(ray, is, epilson))
                     found = true;
             }
-            if (found)
-                return true;
             if (top == 0)
                 break;
 
@@ -226,8 +235,8 @@ bool KdTree::intersect(const Ray &ray, Intersection *is, real epilson) const
             int dim = node->flag;
             real split = node->split;
             real splitT = (node->split - ray.o[dim]) * invD[dim];
-            bool leftFirst = (ray.o[dim] <  split || (ray.o[dim] == split &&
-                                                      ray.d[dim] > 0));
+            bool leftFirst = ((ray.o[dim] <  split) ||
+                              (ray.o[dim] == split && ray.d[dim] < 0));
             decltype(node) next0, next1;
             if (leftFirst) {
                 next0 = node + 1;
@@ -241,13 +250,14 @@ bool KdTree::intersect(const Ray &ray, Intersection *is, real epilson) const
             else if (splitT < minT)
                 node = next1;
             else {
-                node = next0;
                 stack[top++] = make_tuple(splitT, maxT, next1);
+                node = next0;
+                maxT = splitT;
             }
         }
     }
 
-    return false;
+    return found;
 }
 
 VSRAY_NAMESPACE_END

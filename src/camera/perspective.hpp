@@ -8,6 +8,13 @@ VSRAY_NAMESPACE_BEGIN
 class PerspCamera : public Camera {
 public:
     PerspCamera(
+            const Transform &tr,
+            real width,
+            real height,
+            real depth,
+            real lensRadius = 0.f,
+            real focalDistance = 0.f);
+    PerspCamera(
             const Point &from,
             const Vector &to,
             const Vector &up,
@@ -17,6 +24,7 @@ public:
             real lensRadius = 0.f,
             real focalDistance = 0.f);
     virtual void genRay(const Sample &sample, Ray *ray);
+    void setFocalDistance(real);
 
 private:
     void modifyRayDOF(const Sample &sample, Ray *ray);
